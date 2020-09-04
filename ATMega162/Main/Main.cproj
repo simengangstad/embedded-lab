@@ -146,6 +146,12 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="external_memory.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="external_memory.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
