@@ -30,11 +30,6 @@ int uart_receive(FILE* file) {
 	return UDR0;
 }
 
-void uart_flush(void) {
-	unsigned char dummy;
-	while( UCSR0A & (1 << RXC0) ) dummy = UDR0;
-}
-
 void uart_transmit_string(char* data) {
 	while (*data != '\0'){
 		uart_transmit(*data, NULL);
