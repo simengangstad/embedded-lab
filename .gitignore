@@ -10,6 +10,8 @@
 # Prerequisites
 *.d
 *.vs/
+Debug/
+Release/
 
 # Object files
 *.o
