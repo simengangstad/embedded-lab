@@ -29,7 +29,11 @@ int uart_transmit(char data, FILE* file);
  */
 int uart_receive(FILE* file);
 
-
+/**
+ * @brief Transmits a whole string in the form of a char pointer.
+ * 
+ * @param data The string.
+ */
 void uart_transmit_string(char* data);
 
 #endif
