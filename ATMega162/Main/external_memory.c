@@ -1,4 +1,5 @@
 #include "external_memory.h"
+
 #include <avr/io.h>
 #include <stdlib.h>
 
@@ -9,14 +10,14 @@ void external_memory_init() {
     SFIOR |= (1 << XMM2);
 }
 
-void external_memory_write(unsigned char data, unsigned short offset_address) {
-    volatile char* external_memory = (char *) BASE_ADDRESS;
+void external_memory_write(uint8_t data, uint16_t offset_address) {
+    volatile uint8_t* external_memory = (uint8_t *) BASE_ADDRESS;
     external_memory[offset_address] = data;
 }
 
-unsigned char external_memory_read(unsigned short offset_address) {
-    volatile char* external_memory = (char *) BASE_ADDRESS;
-    unsigned char value = external_memory[offset_address];
+uint8_t external_memory_read(uint16_t offset_address) {
+    volatile uint8_t* external_memory = (uint8_t *) BASE_ADDRESS;
+    uint8_t value = external_memory[offset_address];
     return value;
 }
 
@@ -32,9 +33,9 @@ void external_memory_test() {
     // Write phase: Immediately check that the correct value was stored
     srand(seed);
     for (uint16_t i = 0; i < ext_ram_size; i++) {
-        uint8_t some_value = rand();
+        volatile uint8_t some_value = rand();
         ext_ram[i] = some_value;
-        uint8_t retreived_value = ext_ram[i];
+        volatile uint8_t retreived_value = ext_ram[i];
         if (retreived_value != some_value) {
             printf("Write phase error: ext_ram[%4d] = %02X (should be %02X)\r\n", i, retreived_value, some_value);
             write_errors++;
@@ -44,8 +45,8 @@ void external_memory_test() {
     srand(seed);
     // reset the PRNG to the state it had before the write phase
     for (uint16_t i = 0; i < ext_ram_size; i++) {
-        uint8_t some_value = rand();
-        uint8_t retreived_value = ext_ram[i];
+        volatile uint8_t some_value = rand();
+        volatile uint8_t retreived_value = ext_ram[i];
         if (retreived_value != some_value) {
             printf("Retrieval phase error: ext_ram[%4d] = %02X (should be %02X)\r\n", i, retreived_value, some_value);
             retrieval_errors++;

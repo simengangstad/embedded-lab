@@ -1,6 +1,8 @@
 #ifndef EXTERNAL_MEMORY
 #define EXTERNAL_MEMORY
 
+#include <stdio.h>
+
 /**
  * @brief Sets up the to use external memory and the number of bits used for addressing.
  */
@@ -12,7 +14,7 @@ void external_memory_init();
  * @param data The byte to write. 
  * @param offset_address The address to write to, offset by base address 0x1000. 
  */
-void external_memory_write(unsigned char data, unsigned short offset_address);
+void external_memory_write(uint8_t data, uint16_t offset_address);
 
 /**
  * @brief Retrieve a value from memory.
@@ -21,7 +23,7 @@ void external_memory_write(unsigned char data, unsigned short offset_address);
  *
  * @return The data at the given address.
  */
-unsigned char external_memory_read(unsigned short offset_address);
+uint8_t external_memory_read(uint16_t offset_address);
 
 /**
  * @brief Tests the memory space by writing and reading to different locations.
