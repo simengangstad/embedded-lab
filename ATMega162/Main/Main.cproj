@@ -126,7 +126,6 @@
             <Value>%24(PackRepoDir)\atmel\ATmega_DFP\1.2.209\include</Value>
           </ListValues>
         </avrgcc.compiler.directories.IncludePaths>
-        <avrgcc.compiler.optimization.level>Optimize (-O1)</avrgcc.compiler.optimization.level>
         <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
         <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
         <avrgcc.compiler.optimization.DebugLevel>Default (-g2)</avrgcc.compiler.optimization.DebugLevel>
@@ -146,10 +145,22 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="adc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="adc.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="external_memory.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="external_memory.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="input.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="input.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="main.c">

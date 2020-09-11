@@ -1,5 +1,4 @@
 #include "uart.h"
-
 #include <avr/io.h>
 
 #define FOSC 4915200
