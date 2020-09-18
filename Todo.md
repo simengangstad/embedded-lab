@@ -1,5 +1,0 @@
-- Check that direction work
-- Document ADC and input modules
-- Go over code and structure it
-- Add buttons from input module board to input module, the ones going directly to the ATMega
-- Calculate joystick voltage to ADC value transfer function
