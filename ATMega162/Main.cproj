@@ -145,16 +145,22 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="adc.c">
+    <Compile Include="drivers\adc.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="adc.h">
+    <Compile Include="drivers\adc.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="external_memory.c">
+    <Compile Include="drivers\external_memory.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="external_memory.h">
+    <Compile Include="drivers\external_memory.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\uart.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\uart.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="input.c">
@@ -166,12 +172,9 @@
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="uart.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="uart.h">
-      <SubType>compile</SubType>
-    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="drivers" />
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>
