@@ -7,9 +7,19 @@
 #define CALIBRATION_STEP_INTERVAL		5
 #define JOYSTICK_DEADZONE				5
 
+/**
+ * @brief Joystick midpoint/offset in x. 
+ */
 static uint8_t midpoint_x = 0;
+
+/**
+ * @brief Joystick midpoint/offset in y. 
+ */
 static uint8_t midpoint_y = 0;
 
+/**
+ * @brief Performs CALIBRATION_STEPS reads of the joystick position and calculates the offset midpoint.
+ */
 static void input_calibrate_joystick() {
 	
 	int midpoint_x_total = 0;
@@ -27,10 +37,14 @@ static void input_calibrate_joystick() {
 	printf("Joystick calibration done, %d, %d", midpoint_x, midpoint_y);
 }
 
-void input_init() {
-	input_calibrate_joystick();
-}
-
+/**
+ * @brief Corrects bias and sets up the correct scale for the joystick input. 
+ * 
+ * @param value Joystick input value to correct.
+ * @param midpoint The calculated midpoint from calibration.
+ *
+ * @return A value from -100 to 100. 
+ */
 static int input_correct_joystick_from_calibration(uint8_t value, uint8_t midpoint) {
 	const float delta_left = midpoint - 0;
 	const float delta_right = 255 - midpoint;
@@ -43,6 +57,10 @@ static int input_correct_joystick_from_calibration(uint8_t value, uint8_t midpoi
 	else {
 		return 100 * corrected_value / delta_right;
 	}
+}
+
+void input_init() {
+	input_calibrate_joystick();
 }
 
 JoystickPos input_joystick_position() {
