@@ -46,7 +46,7 @@ int main(void) {
 
 		printf("x: %d, y: %d, vertical: %s, horizontal: %s, ", joystick_position.x, joystick_position.y, vertical_direction, horizontal_direction);
 		printf("left slider: %d, right slider: %d, left button: %i, right button: %i \r\n", slider_position.left, slider_position.right, left_button, right_button);
-		_delay_ms(200);
+		//_delay_ms(200);
 	}
 	return 0;
 }

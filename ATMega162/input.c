@@ -3,13 +3,14 @@
 
 #include <avr/io.h>
 #include <util/delay.h>
+#include <stdbool.h>
 
-#define CALIBRATION_STEPS				5
+#define CALIBRATION_STEPS				50
 #define CALIBRATION_STEP_INTERVAL		5
-#define JOYSTICK_DEADZONE				5
+#define JOYSTICK_DEADZONE				20
 
-#define LEFT_TOUCH_BUTTON_PIN			PD4
-#define RIGHT_TOUCH_BUTTON_PIN			PD5
+#define LEFT_TOUCH_BUTTON_PIN			PD5
+#define RIGHT_TOUCH_BUTTON_PIN			PD4
 
 /**
  * @brief Joystick midpoint/offset in x. 
@@ -35,8 +36,8 @@ static void input_calibrate_joystick() {
 		_delay_ms(CALIBRATION_STEP_INTERVAL);
 	}
 	
-	midpoint_x = midpoint_x_total / 5;
-	midpoint_y = midpoint_y_total / 5;
+	midpoint_x = midpoint_x_total / CALIBRATION_STEPS;
+	midpoint_y = midpoint_y_total / CALIBRATION_STEPS;
 	
 	printf("Joystick calibration done, %d, %d", midpoint_x, midpoint_y);
 }
@@ -67,15 +68,24 @@ void input_init() {
 	input_calibrate_joystick();
 
 	// Set up pins on PD4 and PD5 for button input
-	DDRD |= (0 << LEFT_TOUCH_BUTTON_PIN);
-	DDRD |= (0 << RIGHT_TOUCH_BUTTON_PIN);
+	DDRD &= ~(1 << LEFT_TOUCH_BUTTON_PIN);
+	DDRD &= ~(1 << RIGHT_TOUCH_BUTTON_PIN);
 }
 
 JoystickPosition input_joystick_position() {
 	JoystickPosition position;
 	
 	position.x = input_correct_joystick_from_calibration(adc_read(ADC_JOYSTICK_X_CHANNEL), midpoint_x);
+	
+	if (abs(position.x) < JOYSTICK_DEADZONE) {
+		position.x = 0;
+	}
+	
 	position.y = input_correct_joystick_from_calibration(adc_read(ADC_JOYSTICK_Y_CHANNEL), midpoint_y);	
+	
+	if (abs(position.y) < JOYSTICK_DEADZONE) {
+		position.y = 0;
+	}
 	
 	return position;
 }
@@ -116,9 +126,9 @@ SliderPosition input_slider_position() {
 }
 
 uint8_t input_left_button_pressed() {
-	return PIND & (1 << LEFT_TOUCH_BUTTON_PIN);
+	return (PIND & (1 << LEFT_TOUCH_BUTTON_PIN)) > 0 ? 1 : 0;
 }
 
 uint8_t input_right_button_pressed() {
-	return PIND & (1 << RIGHT_TOUCH_BUTTON_PIN);
+	return (PIND & (1 << RIGHT_TOUCH_BUTTON_PIN)) > 0 ? 1 : 0;
 }
