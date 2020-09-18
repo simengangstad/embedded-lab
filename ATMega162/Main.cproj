@@ -157,6 +157,12 @@
     <Compile Include="drivers\external_memory.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="drivers\oled.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\oled.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="drivers\uart.c">
       <SubType>compile</SubType>
     </Compile>

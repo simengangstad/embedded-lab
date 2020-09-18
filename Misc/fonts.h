@@ -7,6 +7,10 @@
 #ifndef FONTS_H_
 #define FONTS_H_
 
+#define ASCII_OFFSET 32
+#define LARGE_FONT_SIZE 8
+#define NORMAL_FONT_SIZE 5
+#define SMALL_FONT_SIZE 4
 
 #include <avr/pgmspace.h>
 
