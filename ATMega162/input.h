@@ -49,4 +49,15 @@ JoystickDirection input_joystick_vertical_direction();
  */
 SliderPosition input_slider_position();
 
+/**
+ * @return Whether the left touch button is pressed.
+ */
+uint8_t input_left_button_pressed();
+
+/**
+ * @return Whether the right touch button is pressed.
+ */
+uint8_t input_right_button_pressed();
+
+
 #endif
