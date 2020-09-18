@@ -3,6 +3,11 @@
 
 #include <stdio.h>
 
+#define SRAM_OFFSET 0x800
+#define ADC_OFFSET 0x400
+#define OLED_COMMAND_OFFSET 0x000
+#define OLED_DATA_OFFSET 0x200
+
 /**
  * @brief Sets up the to use external memory and the number of bits used for addressing.
  */
