@@ -1,5 +1,5 @@
-#ifndef INPUT_H_
-#define INPUT_H_
+#ifndef INPUT_H
+#define INPUT_H
 
 #include <stdio.h>
 
@@ -50,14 +50,15 @@ JoystickDirection input_joystick_vertical_direction();
 SliderPosition input_slider_position();
 
 /**
- * @return Whether the left touch button is pressed.
+ * @return 0/1 when not pressed / pressed.
  */
 uint8_t input_left_button_pressed();
 
 /**
- * @return Whether the right touch button is pressed.
+ * @return 0/1 when not pressed / pressed.
  */
 uint8_t input_right_button_pressed();
 
+void input_test(); 
 
 #endif
