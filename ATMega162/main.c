@@ -3,11 +3,11 @@
 #include <stdio.h>
 #include <util/delay.h>
 
-#include "../Misc/sram_test.c"
 #include "drivers/adc.h"
 #include "drivers/external_memory.h"
 #include "drivers/oled.h"
 #include "drivers/uart.h"
+#include "user_interface/gui.h"
 #include "user_interface/input.h"
 
 void initialize_atmega() {
@@ -17,7 +17,8 @@ void initialize_atmega() {
     adc_init();
     input_init();
     oled_init();
-    SRAM_test();
+    external_memory_sram_test();
+    gui_init();
 }
 
 char* get_string_from_joystick_direction(JoystickDirection joystick_direction) {
@@ -37,8 +38,26 @@ char* get_string_from_joystick_direction(JoystickDirection joystick_direction) {
 
 int main(void) {
     initialize_atmega();
+    while (1) {
+        gui_handle_input();
+        gui_display();
+    }
+    // struct timespec
 
-    input_test();
+    //     while (1) {
+    //     if (clock_gettime(CLOCK_REALTIME, &stop) == -1) {
+    //         perror("clock gettime");
+    //         return EXIT_FAILURE;
+    //     }
 
+    //     counter += (stop.tv_sec - start.tv_sec) * 1000000 + (unsigned long)(stop.tv_nsec - start.tv_nsec) / 1000.0;
+
+    //     if (counter > 16667) {
+    //         gui_handle_input();
+    //         gui_display();
+
+    //         counter = 0;
+    //     }
+    // }
     return 0;
 }

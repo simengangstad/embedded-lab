@@ -157,10 +157,19 @@
     <Compile Include="drivers\external_memory.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="drivers\fonts.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="drivers\oled.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="drivers\oled.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\timer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\timer.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="drivers\uart.c">
@@ -169,18 +178,25 @@
     <Compile Include="drivers\uart.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="input.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="input.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="main.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="user_interface\gui.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="user_interface\gui.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="user_interface\input.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="user_interface\input.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="drivers" />
+    <Folder Include="user_interface" />
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>

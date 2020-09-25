@@ -1,2 +1,5 @@
-+ Flytte filer fra Misc (sram og fonts) inn i Atmega162? – brukes jo bare der
-+ GUI osv.
++ Free memory in gui
++ Specify macros better
++ Document and structurize 
++ 60 Hz on screen (timer interrupt)
++ Interrupt for joystick button
