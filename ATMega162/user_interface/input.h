@@ -6,22 +6,20 @@
 /**
  * @brief Defines the direction of the joystick.
  */
-typedef enum {
-	UP, DOWN, LEFT, RIGHT, NEUTRAL
-} JoystickDirection;
+typedef enum { UP, DOWN, LEFT, RIGHT, NEUTRAL } JoystickDirection;
 
 /**
  * @brief Defines the position of the joystick.
  */
 typedef struct {
-	int8_t x, y;
+    int8_t x, y;
 } JoystickPosition;
 
 /**
- * @brief Defines the position of the sliders. 
+ * @brief Defines the position of the sliders.
  */
 typedef struct {
-	int8_t left, right;
+    int8_t left, right;
 } SliderPosition;
 
 /**
@@ -30,19 +28,14 @@ typedef struct {
 void input_init();
 
 /**
- * @return The current joystick position. 
+ * @return The current joystick position.
  */
 JoystickPosition input_joystick_position();
 
 /**
- * @return The current horizontal direction of the joystick.
+ * @return The current direction of the joystick.
  */
-JoystickDirection input_joystick_horizontal_direction();
-
-/**
- * @return The current vertical direction of the joystick.
- */
-JoystickDirection input_joystick_vertical_direction();
+JoystickDirection input_joystick_direction();
 
 /**
  * @return The current slider positions.
@@ -59,6 +52,14 @@ uint8_t input_left_button_pressed();
  */
 uint8_t input_right_button_pressed();
 
-void input_test(); 
+/**
+ * @return 0/1 when not pressed / pressed.
+ */
+uint8_t input_joystick_button_pressed();
+
+/**
+ * @brief Runs a while loop outputting the different inputs.
+ */
+void input_test();
 
 #endif
