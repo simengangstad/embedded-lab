@@ -5,6 +5,7 @@
 
 #include "drivers/adc.h"
 #include "drivers/external_memory.h"
+#include "drivers/mcp2515.h"
 #include "drivers/oled.h"
 #include "drivers/uart.h"
 #include "user_interface/gui.h"
@@ -19,6 +20,7 @@ void initialize_atmega() {
     oled_init();
     external_memory_sram_test();
     gui_init();
+    mcp2515_init();
 }
 
 char* get_string_from_joystick_direction(JoystickDirection joystick_direction) {
@@ -38,26 +40,22 @@ char* get_string_from_joystick_direction(JoystickDirection joystick_direction) {
 
 int main(void) {
     initialize_atmega();
+
+    mcp2515_bit_modify(MCP_CANCTRL, MODE_MASK, MODE_LOOPBACK);
+
+    printf("Mode: %i\r\n", mcp2515_read(MCP_CANSTAT) & MODE_MASK);
+
+    uint8_t data[1] = {0xE0};
+    mcp2515_write(MCP_TXB0SIDH, &data, 1);
+    mcp2515_rts();
+
+    uint8_t value = mcp2515_read(MCP_RXB0SIDH);
+    printf("Received: %i\r\n", value);
+
     while (1) {
-        gui_handle_input();
-        gui_display();
+        // gui_handle_input();
+        // gui_display();
     }
-    // struct timespec
 
-    //     while (1) {
-    //     if (clock_gettime(CLOCK_REALTIME, &stop) == -1) {
-    //         perror("clock gettime");
-    //         return EXIT_FAILURE;
-    //     }
-
-    //     counter += (stop.tv_sec - start.tv_sec) * 1000000 + (unsigned long)(stop.tv_nsec - start.tv_nsec) / 1000.0;
-
-    //     if (counter > 16667) {
-    //         gui_handle_input();
-    //         gui_display();
-
-    //         counter = 0;
-    //     }
-    // }
     return 0;
 }

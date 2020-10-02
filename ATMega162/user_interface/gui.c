@@ -2,9 +2,9 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <avr/interrupt.h>
 
 #include "input.h"
-
 
 static Menu* current_menu;
 static MenuItem* current_item;
@@ -18,8 +18,8 @@ static Menu* gui_construct_menu(Menu* parent_menu, MenuItem* parent_item, char* 
     menu->parent_item = parent_item;
     menu->title = title;
     menu->top_item = NULL;
-	
-	return menu;
+
+    return menu;
 }
 
 static MenuItem* gui_add_menu_item(Menu* menu, char* text, void (*function)()) {
@@ -49,6 +49,33 @@ static MenuItem* gui_add_menu_item(Menu* menu, char* text, void (*function)()) {
 
 void print_button_pressed() { printf("Pressed\r\n"); }
 
+ISR(TIMER1_COMPA_vect) { 
+	// TODO: Remove
+	PORTB ^= (1 << PB2);
+	gui_handle_input();
+	gui_display();
+}
+
+static void gui_setup_update_display_timer() { 
+	
+	DDRB |= (1 << DDB2);
+
+	// Set the timer to fire on 60 Hz
+	OCR1A = 79;
+
+	// Set mode to CTC, clear timer on compare with prescaling 1024.
+	TCCR1B |= (1 << WGM12) | (1 << CS10) | (1 << CS12);
+    
+	// Disable interrupts
+    cli();
+
+	// Set up interrupt on compare
+    TIMSK |= (1 << OCIE1A);
+
+	// Enable interrupts
+    sei();
+}
+
 void gui_init() {
     current_menu = gui_construct_menu(NULL, NULL, "Main Menu");
     gui_add_menu_item(current_menu, "Play", &print_button_pressed);
@@ -67,6 +94,9 @@ void gui_init() {
     credits_item->sub_menu = credits_menu;
 
     current_item = current_menu->top_item;
+
+    // Set up interrupt
+    // gui_setup_update_display_timer();
 }
 
 void gui_handle_input() {
@@ -98,8 +128,8 @@ void gui_handle_input() {
                     current_menu = current_menu->parent_menu;
                 }
                 break;
-			default:
-				break;
+            default:
+                break;
         }
         previous_direction = current_direction;
     }

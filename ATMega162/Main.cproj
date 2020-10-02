@@ -151,6 +151,12 @@
     <Compile Include="drivers\adc.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="drivers\can_controller.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\can_controller.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="drivers\external_memory.c">
       <SubType>compile</SubType>
     </Compile>
@@ -160,16 +166,22 @@
     <Compile Include="drivers\fonts.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="drivers\mcp2515.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\mcp2515.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="drivers\oled.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="drivers\oled.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="drivers\timer.c">
+    <Compile Include="drivers\spi.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="drivers\timer.h">
+    <Compile Include="drivers\spi.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="drivers\uart.c">
