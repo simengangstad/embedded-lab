@@ -4,8 +4,8 @@
 #include <util/delay.h>
 
 #include "drivers/adc.h"
+#include "drivers/can_controller.h"
 #include "drivers/external_memory.h"
-#include "drivers/mcp2515.h"
 #include "drivers/oled.h"
 #include "drivers/uart.h"
 #include "user_interface/gui.h"
@@ -20,7 +20,7 @@ void initialize_atmega() {
     oled_init();
     external_memory_sram_test();
     gui_init();
-    mcp2515_init();
+    can_controller_init();
 }
 
 char* get_string_from_joystick_direction(JoystickDirection joystick_direction) {
@@ -41,16 +41,11 @@ char* get_string_from_joystick_direction(JoystickDirection joystick_direction) {
 int main(void) {
     initialize_atmega();
 
-    mcp2515_bit_modify(MCP_CANCTRL, MODE_MASK, MODE_LOOPBACK);
+    Message message = {123, 4, "Hei"};
+    can_controller_transmit(&message);
 
-    printf("Mode: %i\r\n", mcp2515_read(MCP_CANSTAT) & MODE_MASK);
-
-    uint8_t data[1] = {0xE0};
-    mcp2515_write(MCP_TXB0SIDH, &data, 1);
-    mcp2515_rts();
-
-    uint8_t value = mcp2515_read(MCP_RXB0SIDH);
-    printf("Received: %i\r\n", value);
+    // Message* recived = can_controller_read();
+    // printf("%s", recived->data);
 
     while (1) {
         // gui_handle_input();
