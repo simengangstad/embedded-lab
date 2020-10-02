@@ -60,8 +60,13 @@
 
 #define MCP_TXB1CTRL 0x40
 #define MCP_TXB2CTRL 0x50
+
 #define MCP_RXB0CTRL 0x60
 #define MCP_RXB0SIDH 0x61
+#define MCP_RXB0SIDL 0x62
+#define MCP_RXB0DLC 0x65
+#define MCP_RXB0D0 0x66
+
 #define MCP_RXB1CTRL 0x70
 #define MCP_RXB1SIDH 0x71
 
@@ -137,8 +142,9 @@
 #define WAKFIL_ENABLE 0x40
 #define WAKFIL_DISABLE 0x00
 
-// CANINTF Register Bits
+// CANINTF/E Register Bits
 
+#define MCP_RX0IE 0x01
 #define MCP_RX0IF 0x01
 #define MCP_RX1IF 0x02
 #define MCP_TX0IF 0x04
@@ -148,15 +154,24 @@
 #define MCP_WAKIF 0x40
 #define MCP_MERRF 0x80
 
+// TXCTRL bits
+
+#define MCP_TXB_PRIORITY_MASK 0x03
+#define MCP_TXB_PRIORITY_HIGHEST 0x03
+
 // Functions for MCP2515 manipulation
 
 uint8_t mcp2515_read(uint8_t address);
+
+void mcp2515_read_array(uint8_t address, uint8_t length, uint8_t* result);
 
 void mcp2515_reset(void);
 
 uint8_t mcp2515_init(void);
 
-void mcp2515_write(uint8_t address, uint8_t* data, uint8_t length);
+void mcp2515_write_array(uint8_t address, uint8_t* data, uint8_t length);
+
+void mcp2515_write(uint8_t address, uint8_t data);
 
 void mcp2515_rts(void);
 
@@ -164,4 +179,4 @@ uint8_t mcp2515_read_status(void);
 
 void mcp2515_bit_modify(uint8_t address, uint8_t mask, uint8_t data);
 
-#endif /* MCP2515_H_ */
+#endif
