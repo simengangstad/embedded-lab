@@ -5,3 +5,4 @@
 + Interrupt for joystick button
 + put void in emty parameter lists
 + ADC timing
++ Improve CAN message
