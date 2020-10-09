@@ -23,7 +23,7 @@ struct MenuItem {
 
 /**
  * @brief Menu, consisting of a title and a linked list of menu items.
- * 
+ *
  * @note Parent item refers to the menu item which goes into this menu.
  */
 struct Menu {
@@ -47,5 +47,10 @@ void gui_handle_input();
  * @brief Overwrites the OLED buffer with a buffer located in SRAM.
  */
 void gui_display();
+
+/**
+ * @return 1 when the timer running at 60 Hz has triggered an interrupt to update the display.
+ */
+uint8_t gui_display_update_flag();
 
 #endif

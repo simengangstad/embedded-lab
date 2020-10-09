@@ -1,8 +1,8 @@
 #include "gui.h"
 
+#include <avr/interrupt.h>
 #include <stdlib.h>
 #include <string.h>
-#include <avr/interrupt.h>
 
 #include "input.h"
 
@@ -10,6 +10,7 @@ static Menu* current_menu;
 static MenuItem* current_item;
 static JoystickDirection previous_direction = NEUTRAL;
 static uint8_t previous_button_state = 0;
+static uint8_t display_update_flag = 0;
 
 static Menu* gui_construct_menu(Menu* parent_menu, MenuItem* parent_item, char* title) {
     Menu* menu = (Menu*)malloc(sizeof(Menu));
@@ -49,30 +50,28 @@ static MenuItem* gui_add_menu_item(Menu* menu, char* text, void (*function)()) {
 
 void print_button_pressed() { printf("Pressed\r\n"); }
 
-ISR(TIMER1_COMPA_vect) { 
-	// TODO: Remove
-	PORTB ^= (1 << PB2);
-	gui_handle_input();
-	gui_display();
+ISR(TIMER1_COMPA_vect) {
+    display_update_flag += 1;
 }
 
-static void gui_setup_update_display_timer() { 
-	
-	DDRB |= (1 << DDB2);
+static void gui_setup_update_display_timer() {
+    // Set the timer to fire on 20 Hz
+	// 60: 79
+	// 30: 159
+	// 20: 239
+    // 10: 479
+    OCR1A = 159;
 
-	// Set the timer to fire on 60 Hz
-	OCR1A = 79;
+    // Set mode to CTC, clear timer on compare with prescaling 1024.
+    TCCR1B |= (1 << WGM12) | (1 << CS10) | (1 << CS12);
 
-	// Set mode to CTC, clear timer on compare with prescaling 1024.
-	TCCR1B |= (1 << WGM12) | (1 << CS10) | (1 << CS12);
-    
-	// Disable interrupts
+    // Disable interrupts
     cli();
 
-	// Set up interrupt on compare
+    // Set up interrupt on compare
     TIMSK |= (1 << OCIE1A);
 
-	// Enable interrupts
+    // Enable interrupts
     sei();
 }
 
@@ -96,7 +95,7 @@ void gui_init() {
     current_item = current_menu->top_item;
 
     // Set up interrupt
-    // gui_setup_update_display_timer();
+    gui_setup_update_display_timer();
 }
 
 void gui_handle_input() {
@@ -146,6 +145,7 @@ void gui_handle_input() {
 }
 
 void gui_display() {
+
     oled_clear();
 
     // If we are in a submenu
@@ -179,6 +179,16 @@ void gui_display() {
         iterator = iterator->next;
         row++;
     }
-
+	
     oled_update();
+	
+	if (display_update_flag > 1) {
+		display_update_flag -= 1;	
+	}
+	else {
+		display_update_flag = 0;
+	}
+	
 }
+
+uint8_t gui_display_update_flag() { return display_update_flag > 0 ? 1 : 0; }
