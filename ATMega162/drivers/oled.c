@@ -8,8 +8,6 @@
  */
 static uint8_t oled_row = 0, oled_column = 0;
 
-// uint8_t[8][128] buffer = BASE_ADDRESS + SRAM_OFFSET;
-
 static void oled_write_command(uint8_t command) { external_memory_write(command, OLED_COMMAND_OFFSET); }
 
 static void oled_write_data(uint8_t data, Style style) {
@@ -79,16 +77,18 @@ void oled_set_brightness(uint8_t brightness) {
 }
 
 void oled_clear() {
-    for (int i = 0; i < ROW_SIZE; i++) {
-        oled_clear_row(i);
+    for (uint8_t row = 0; row < ROW_SIZE; row++) {
+        for (uint8_t column = 0; column < COLUMN_SIZE; column++) {
+            external_memory_write(0x0, SRAM_OFFSET + row * 128 + column);
+        }
     }
+
     oled_pos(0, 0);
 }
 
 void oled_clear_row(uint8_t row_index) {
-    oled_goto_row(row_index);
     for (int i = 0; i < COLUMN_SIZE; i++) {
-        oled_write_data(0x0, NON_INVERTED);
+        external_memory_write(0x0, SRAM_OFFSET + row_index * 128 + i);
     }
 }
 
@@ -149,12 +149,13 @@ void oled_print_circle(Style style) {
 }
 
 void oled_update() {
+	// Set column to 0
+	oled_write_command(0);
+	oled_write_command(0x10);
     for (uint8_t row = 0; row < ROW_SIZE; row++) {
-        // Choose column:
-        oled_write_command(0);
-        oled_write_command(0x10);
-
-        // Choose row:
+       
+        // Choose row. Column will be set to 0 automatically since OLED keeps an internal
+		// pointer
         oled_write_command(0xB0 + row);
 
         for (uint8_t column = 0; column < COLUMN_SIZE; column++) {
