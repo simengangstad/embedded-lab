@@ -1,6 +1,7 @@
 #define F_CPU 4915200
 
 #include <stdio.h>
+#include <avr/io.h>
 #include <util/delay.h>
 
 #include "drivers/adc.h"
@@ -41,15 +42,26 @@ char* get_string_from_joystick_direction(JoystickDirection joystick_direction) {
 int main(void) {
     initialize_atmega();
 
-    Message message = {123, 4, "Hei"};
-    can_controller_transmit(&message);
+    Message joystick_position_message = {1, 3, {0, 0, 0}};
 
-    // Message* recived = can_controller_read();
-    // printf("%s", recived->data);
-
+    int count = 0;
+	
     while (1) {
-        // gui_handle_input();
-        // gui_display();
+	
+		if (gui_display_update_flag()) {
+            
+			gui_handle_input();
+            gui_display();
+        }
+
+        
+		JoystickPosition position = input_joystick_position();
+		JoystickDirection direction = input_joystick_direction();
+		joystick_position_message.data[0] = position.x;
+		joystick_position_message.data[1] = position.y;
+		joystick_position_message.data[2] = direction;
+
+		can_controller_transmit(&joystick_position_message);
     }
 
     return 0;
