@@ -20,8 +20,14 @@ ISR(INT1_vect) {
 void can_controller_init() {
     mcp2515_init();
 
-    // Set loopback mode
-    mcp2515_bit_modify(MCP_CANCTRL, MODE_MASK, MODE_LOOPBACK);
+    // Set BRP to 3 for at bit rate of 125 kbit/s. The formula is given by:
+    // BRP = T_q*F_osc/2 - 1 where T_q is set to 1/16*125 kbit/s and F_osc is 16 MHz
+    mcp2515_write(MCP_CNF1, 0x03);
+    mcp2515_write(MCP_CNF2, 0b10110001);
+    mcp2515_write(MCP_CNF3, 0b00000101);
+
+    // Set normal mode
+    mcp2515_bit_modify(MCP_CANCTRL, MODE_MASK, MODE_NORMAL);
 
     // Set up interrupt on receive
     mcp2515_bit_modify(MCP_CANINTE, MCP_RX0IE, MCP_RX0IE);
