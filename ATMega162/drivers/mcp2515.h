@@ -69,6 +69,9 @@
 
 #define MCP_RXB1CTRL 0x70
 #define MCP_RXB1SIDH 0x71
+#define MCP_RXB1SIDL 0x72
+#define MCP_RXB1DLC 0x75
+#define MCP_RXB1D0 0x76
 
 #define MCP_TX_INT 0x1C    // Enable all transmit interrupts
 #define MCP_TX01_INT 0x0C  // Enable TXB0 and TXB1 interrupts
@@ -145,11 +148,15 @@
 // CANINTF/E Register Bits
 
 #define MCP_RX0IE 0x01
+#define MCP_RX1IE 0x02
+
 #define MCP_RX0IF 0x01
 #define MCP_RX1IF 0x02
+
 #define MCP_TX0IF 0x04
 #define MCP_TX1IF 0x08
 #define MCP_TX2IF 0x10
+
 #define MCP_ERRIF 0x20
 #define MCP_WAKIF 0x40
 #define MCP_MERRF 0x80
