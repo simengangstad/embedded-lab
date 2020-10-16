@@ -1,12 +1,13 @@
 #define F_CPU 4915200
 
-#include <stdio.h>
 #include <avr/io.h>
+#include <stdio.h>
 #include <util/delay.h>
 
 #include "drivers/adc.h"
 #include "drivers/can_controller.h"
 #include "drivers/external_memory.h"
+#include "drivers/mcp2515.h"
 #include "drivers/oled.h"
 #include "drivers/uart.h"
 #include "user_interface/gui.h"
@@ -45,23 +46,21 @@ int main(void) {
     Message joystick_position_message = {1, 3, {0, 0, 0}};
 
     int count = 0;
-	
+
     while (1) {
-	
-		if (gui_display_update_flag()) {
-            
-			gui_handle_input();
+        if (gui_display_update_flag()) {
+            gui_handle_input();
             gui_display();
         }
 
-        
-		JoystickPosition position = input_joystick_position();
-		JoystickDirection direction = input_joystick_direction();
-		joystick_position_message.data[0] = position.x;
-		joystick_position_message.data[1] = position.y;
-		joystick_position_message.data[2] = direction;
+        JoystickPosition position = input_joystick_position();
+        JoystickDirection direction = input_joystick_direction();
+        joystick_position_message.data[0] = position.x;
+        joystick_position_message.data[1] = position.y;
+        joystick_position_message.data[2] = direction;
 
-		can_controller_transmit(&joystick_position_message);
+        // printf("%d", mcp2515_read_status() & 0x2);
+        can_controller_transmit(&joystick_position_message);
     }
 
     return 0;

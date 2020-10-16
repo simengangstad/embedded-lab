@@ -165,6 +165,18 @@
     <Compile Include="device_startup\system_sam3xa.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="drivers\actuator\pwm.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\actuator\pwm.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\actuator\servo.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\actuator\servo.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="drivers\can\can_controller.c">
       <SubType>compile</SubType>
     </Compile>
@@ -197,6 +209,7 @@
     <Folder Include="device_startup" />
     <Folder Include="drivers" />
     <Folder Include="drivers\can\" />
+    <Folder Include="drivers\actuator" />
     <Folder Include="drivers\uart_and_printf\" />
   </ItemGroup>
   <ItemGroup>
