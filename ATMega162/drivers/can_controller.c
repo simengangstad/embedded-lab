@@ -8,10 +8,17 @@
 #define MCP_INTERRUPT_PIN PD3
 
 ISR(INT1_vect) {
-    if (mcp2515_read_status() & MCP_RX0IF) {
-        Message* message_ptr = can_controller_read();
+    uint8_t status = mcp2515_read_status();
+    Message* message_ptr;
 
-        printf("%s\r\n", message_ptr->data);
+    if (status & MCP_RX0IF) {
+        message_ptr = can_controller_read(0);
+    } else if (status & MCP_RX1IF) {
+        message_ptr = can_controller_read(1);
+    }
+
+    if (message_ptr) {
+        printf("%s\r\n", message_ptr->data);    
 
         free(message_ptr);
     }
@@ -30,15 +37,15 @@ void can_controller_init() {
     mcp2515_bit_modify(MCP_CANCTRL, MODE_MASK, MODE_NORMAL);
 
     // Set up interrupt on receive
-    mcp2515_bit_modify(MCP_CANINTE, MCP_RX0IE, MCP_RX0IE);
+    mcp2515_bit_modify(MCP_CANINTE, MCP_RX0IE | MCP_RX1IE, MCP_RX0IE | MCP_RX1IE);
 
     // Disable global interrupts
     cli();
 
-    //// Interrupt on falling edge of INT1
+    // Interrupt on falling edge of INT1
     MCUCR |= (1 << ISC11);
 
-    //// Enable interrupt on INT1
+    // Enable interrupt on INT1
     GICR |= 1 << INT1;
 
     sei();
@@ -63,20 +70,37 @@ void can_controller_transmit(Message* message_ptr) {
     mcp2515_rts();
 }
 
-Message* can_controller_read() {
+Message* can_controller_read(uint8_t buffer_id) {
     Message* message_ptr = (Message*)malloc(sizeof(Message));
 
-    uint16_t id_high_byte = (uint16_t)mcp2515_read(MCP_RXB0SIDH);
-    uint16_t id_low_byte = (uint16_t)mcp2515_read(MCP_RXB0SIDL);
+    uint8_t id_low_byte_address, id_high_byte_address, data_length_address, data_start_address, interrupt_flag_address;
+
+    if (buffer_id == 0) {
+        id_low_byte_address = MCP_RXB0SIDL;
+        id_high_byte_address = MCP_RXB0SIDH;
+        data_length_address = MCP_RXB0DLC;
+        data_start_address = MCP_RXB0D0;
+        interrupt_flag_address = MCP_RX0IF;
+
+    } else if (buffer_id == 1) {
+        id_low_byte_address = MCP_RXB1SIDL;
+        id_high_byte_address = MCP_RXB1SIDH;
+        data_length_address = MCP_RXB1DLC;
+        data_start_address = MCP_RXB1D0;
+        interrupt_flag_address = MCP_RX1IF;
+    }
+
+    uint16_t id_high_byte = (uint16_t)mcp2515_read(id_high_byte_address);
+    uint16_t id_low_byte = (uint16_t)mcp2515_read(id_low_byte_address);
 
     message_ptr->id = (id_high_byte << 3) | (id_low_byte >> 5);
 
     // Only grab the lower 4 bits, which specify the length of the message
-    message_ptr->length = mcp2515_read(MCP_RXB0DLC) & 0x0F;
+    message_ptr->length = mcp2515_read(data_length_address) & 0x0F;
 
-    mcp2515_read_array(MCP_RXB0D0, 8, message_ptr->data);
+    mcp2515_read_array(data_start_address, 8, message_ptr->data);
 
-    mcp2515_bit_modify(MCP_CANINTE, MCP_RX0IF, 0x0);
+    mcp2515_bit_modify(MCP_CANINTF, interrupt_flag_address, 0x0);
 
     return message_ptr;
 }

@@ -6,13 +6,13 @@
 typedef struct Message {
     uint16_t id;
     uint8_t length;
-    uint8_t data[8];  // Up to 8 bytes of data, specified by length (?)
+    uint8_t data[8];
 } Message;
 
 void can_controller_init(void);
 
 void can_controller_transmit(Message* message_ptr);
 
-Message* can_controller_read();
+Message* can_controller_read(uint8_t buffer_id);
 
 #endif
