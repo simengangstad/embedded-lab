@@ -6,3 +6,6 @@
 + ADC timing
 + Improve CAN message
 + Use const more
++ Macro in can controller init for MCP values
++ Menu goes above top item
++ Left shift macros instead of hex
