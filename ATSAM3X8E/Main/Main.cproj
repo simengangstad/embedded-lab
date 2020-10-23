@@ -166,6 +166,12 @@
     <Compile Include="device_startup\system_sam3xa.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="drivers\actuator\motor_controller.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\actuator\motor_controller.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="drivers\actuator\pwm.c">
       <SubType>compile</SubType>
     </Compile>
@@ -194,6 +200,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="drivers\adc.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\can\can_joystick.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\can\can_joystick.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="drivers\uart_and_printf\printf-stdarg.c">
