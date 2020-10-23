@@ -54,7 +54,8 @@
       <ToolNumber>J41800001456</ToolNumber>
       <ToolName>Atmel-ICE</ToolName>
     </com_atmel_avrdbg_tool_atmelice>
-    <avrtoolinterface>JTAG</avrtoolinterface>
+    <avrtoolinterface>
+    </avrtoolinterface>
     <avrtoolinterfaceclock>7500000</avrtoolinterfaceclock>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
@@ -189,6 +190,12 @@
     <Compile Include="drivers\can\can_interrupt.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="drivers\adc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\adc.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="drivers\uart_and_printf\printf-stdarg.c">
       <SubType>compile</SubType>
     </Compile>
@@ -199,6 +206,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="drivers\uart_and_printf\uart.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="game.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="game.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="main.c">

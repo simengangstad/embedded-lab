@@ -1,13 +1,15 @@
 #include <string.h>
 
-#include "drivers/can/can_controller.h"
 #include "drivers/actuator/pwm.h"
+#include "drivers/actuator/servo.h"
+#include "drivers/adc.h"
+#include "drivers/can/can_controller.h"
 #include "drivers/uart_and_printf/printf-stdarg.h"
 #include "drivers/uart_and_printf/uart.h"
+#include "game.h"
 #include "sam.h"
-#include "drivers/actuator/servo.h"
 
-// Set baud rate pre scaler to 41, PS1 = 7 TQ, PS2 = 6 TQ, PROPAG = 2 TQ, SJW = 1 TQ.
+// Set baud rate prescaler to 41, PS1 = 7 TQ, PS2 = 6 TQ, PROPAG = 2 TQ, SJW = 1 TQ.
 #define ATSAM_CAN_BR 0x00290165
 
 void ATSAM_leds(void) {
@@ -31,6 +33,7 @@ void ATSAM_INIT(void) {
     SystemInit();
     configure_uart();
     pwm_init();
+    adc_init();
     // ATSAM_leds();
 
     // Disable watchdog
@@ -45,13 +48,13 @@ int main(void) {
         CAN_MESSAGE can_message;
         if (can_receive(&can_message, 0)) {
             if (can_message.id == 1) {
-                //printf("X: %d, Y: %d\n\r", (int8_t)can_message.data[0], (int8_t)can_message.data[1]);
+                // printf("X: %d, Y: %d\n\r", (int8_t)can_message.data[0], (int8_t)can_message.data[1]);
                 // printf("Direction %i\n\r", can_message.data[2]);
                 servo_send_duty_cycle((int8_t)can_message.data[0]);
-
             }
         }
-        
+
+        game_update();
     }
 
     return 0;
