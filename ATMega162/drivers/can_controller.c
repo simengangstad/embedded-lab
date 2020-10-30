@@ -1,3 +1,7 @@
+/**
+ * @file can_controller.c
+ */
+
 #include "can_controller.h"
 
 #include <avr/interrupt.h>
@@ -12,13 +16,15 @@ ISR(INT1_vect) {
     Message* message_ptr;
 
     if (status & MCP_RX0IF) {
-        message_ptr = can_controller_read(0);
+        message_ptr = (Message*)malloc(sizeof(Message));
+        can_controller_read(0, message_ptr);
     } else if (status & MCP_RX1IF) {
-        message_ptr = can_controller_read(1);
+        message_ptr = (Message*)malloc(sizeof(Message));
+        can_controller_read(1, message_ptr);
     }
 
     if (message_ptr) {
-        printf("%s\r\n", message_ptr->data);    
+        printf("%s\r\n", message_ptr->data);
 
         free(message_ptr);
     }
@@ -70,9 +76,7 @@ void can_controller_transmit(Message* message_ptr) {
     mcp2515_rts();
 }
 
-Message* can_controller_read(uint8_t buffer_id) {
-    Message* message_ptr = (Message*)malloc(sizeof(Message));
-
+void can_controller_read(uint8_t buffer_id, Message* message_ptr) {
     uint8_t id_low_byte_address, id_high_byte_address, data_length_address, data_start_address, interrupt_flag_address;
 
     if (buffer_id == 0) {
@@ -101,6 +105,4 @@ Message* can_controller_read(uint8_t buffer_id) {
     mcp2515_read_array(data_start_address, 8, message_ptr->data);
 
     mcp2515_bit_modify(MCP_CANINTF, interrupt_flag_address, 0x0);
-
-    return message_ptr;
 }

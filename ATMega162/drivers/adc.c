@@ -1,3 +1,7 @@
+/**
+ * @file adc.c
+ */
+
 #include "adc.h"
 
 #include <avr/io.h>
@@ -7,7 +11,7 @@
 
 #define ADC_OFFSET_ADDRESS 0x400
 
-void adc_init() {
+void adc_init(void) {
     DDRB |= (1 << DDB0);
 
     // Set mode to CTC, clear timer on compare (comparing timer counter, TCNT0, with compare register, OCR0).

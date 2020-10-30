@@ -8,17 +8,34 @@
  */
 static uint8_t oled_row = 0, oled_column = 0;
 
+/**
+ * @brief Writes a single command to the OLED's internal registers.
+ */
 static void oled_write_command(uint8_t command) { external_memory_write(command, OLED_COMMAND_OFFSET); }
 
+/**
+ * @brief Writes data to the OLED's internal memory.
+ *
+ * @param style Whether the written data should be inverted or not.
+ */
 static void oled_write_data(uint8_t data, Style style) {
     external_memory_write(data ^ style, SRAM_OFFSET + oled_row * 128 + oled_column);
     oled_column = (oled_column + 1) % 128;
 }
 
+/**
+ * @brief Moves to @p row.
+ */
 static void oled_goto_row(uint8_t row) { oled_row = row; }
 
+/**
+ * @brief Moves to @p column.
+ */
 static void oled_goto_column(uint8_t column) { oled_column = column; }
 
+/**
+ * @brief Writes a single charater to the OLED.
+ */
 static void oled_print_char(char ch, FontSize size, Style style) {
     switch (size) {
         case SMALL: {
@@ -45,7 +62,7 @@ static void oled_print_char(char ch, FontSize size, Style style) {
     }
 }
 
-void oled_init() {
+void oled_init(void) {
     oled_write_command(0xae);  // display off
     oled_write_command(0xa1);  // segment remap
     oled_write_command(0xda);  // common pads hardware: alternative
@@ -149,13 +166,12 @@ void oled_print_circle(Style style) {
 }
 
 void oled_update() {
-	// Set column to 0
-	oled_write_command(0);
-	oled_write_command(0x10);
+    // Set column to 0
+    oled_write_command(0);
+    oled_write_command(0x10);
     for (uint8_t row = 0; row < ROW_SIZE; row++) {
-       
         // Choose row. Column will be set to 0 automatically since OLED keeps an internal
-		// pointer
+        // pointer
         oled_write_command(0xB0 + row);
 
         for (uint8_t column = 0; column < COLUMN_SIZE; column++) {

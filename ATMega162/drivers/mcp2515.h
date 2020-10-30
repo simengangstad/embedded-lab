@@ -1,13 +1,15 @@
 /**
  * @file mcp2515.h
- * @brief Low level driver for setting up the CAN controller and accessing its control and status registers.
+ * @brief Low level driver for setting up the CAN controller and accessing its control and
+ *        status registers.
  */
 
 #ifndef MCP2515_H_
 #define MCP2515_H_
+
 #include <stdio.h>
 
-// Define MCP2515 register addresses
+// MCP2515 register addresses
 
 #define MCP_RXF0SIDH 0x00
 #define MCP_RXF0SIDL 0x01
@@ -81,7 +83,7 @@
 #define MCP_TX01_MASK 0x14
 #define MCP_TX_MASK 0x54
 
-// Define SPI Instruction Set
+// SPI Instruction Set
 
 #define MCP_WRITE 0x02
 
@@ -166,24 +168,56 @@
 #define MCP_TXB_PRIORITY_MASK 0x03
 #define MCP_TXB_PRIORITY_HIGHEST 0x03
 
-// Functions for MCP2515 manipulation
-
-uint8_t mcp2515_read(uint8_t address);
-
-void mcp2515_read_array(uint8_t address, uint8_t length, uint8_t* result);
-
-void mcp2515_reset(void);
-
+/**
+ * @brief Sets up the SPI interface towards the MCP2515 and resets the controller.
+ *
+ * @return 1 If the controller was reset successfully.
+ */
 uint8_t mcp2515_init(void);
 
-void mcp2515_write_array(uint8_t address, uint8_t* data, uint8_t length);
+/**
+ * @brief Resets the MCP2515.
+ */
+void mcp2515_reset(void);
 
+/**
+ * @brief Reads an internal register of the MCP2515.
+ */
+uint8_t mcp2515_read(uint8_t address);
+
+/**
+ * @brief Reads multiple registers from @p address to @p address + @p length
+ */
+void mcp2515_read_array(uint8_t address, uint8_t length, uint8_t* result);
+
+/**
+ * @brief Writes a byte to a given register in the MCP2515 at @p address.
+ */
 void mcp2515_write(uint8_t address, uint8_t data);
 
+/**
+ * @brief Writes a byte array of @p length from @p address to @p address + @p length
+ */
+void mcp2515_write_array(uint8_t address, uint8_t* data, uint8_t length);
+
+/**
+ * @brief Sends a request to send signal to the MCP2515. This has to be called in
+ *        order for CAN messages to be transmitted on the network.
+ */
 void mcp2515_rts(void);
 
+/**
+ * @brief Retrieves the status register of the MCP2515.
+ */
 uint8_t mcp2515_read_status(void);
 
+/**
+ * @brief Modifies a register at the given @p address.
+ *
+ * @param mask Makes it possible to only modify certain bits in the register.
+ *             Passing in 0xFF as @p data with a @p mask of 0x0F will result
+ *             in only the 4 LSB being written to the register.
+ */
 void mcp2515_bit_modify(uint8_t address, uint8_t mask, uint8_t data);
 
 #endif

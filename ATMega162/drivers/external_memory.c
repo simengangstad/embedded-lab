@@ -1,3 +1,7 @@
+/**
+ * @file external_memory.c
+ */
+
 #include "external_memory.h"
 
 #include <avr/io.h>
@@ -5,7 +9,7 @@
 
 #define BASE_ADDRESS 0x1000
 
-void external_memory_init() {
+void external_memory_init(void) {
     MCUCR |= (1 << SRE);
     SFIOR |= (1 << XMM2);
 }

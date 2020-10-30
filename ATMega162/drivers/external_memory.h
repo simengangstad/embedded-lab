@@ -1,3 +1,8 @@
+/**
+ * @file external_memory.h
+ * @brief Driver for interfacing with the SRAM.
+ */
+
 #ifndef EXTERNAL_MEMORY
 #define EXTERNAL_MEMORY
 
@@ -11,7 +16,7 @@
 /**
  * @brief Sets up the to use external memory and the number of bits used for addressing.
  */
-void external_memory_init();
+void external_memory_init(void);
 
 /**
  * @brief Writes a byte of data to external memory.
@@ -25,8 +30,6 @@ void external_memory_write(uint8_t data, uint16_t offset_address);
  * @brief Retrieve a value from memory.
  *
  * @param offset_address The data address, offset by base address 0x1000.
- *
- * @return The data at the given address.
  */
 uint8_t external_memory_read(uint16_t offset_address);
 

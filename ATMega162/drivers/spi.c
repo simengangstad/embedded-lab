@@ -1,3 +1,7 @@
+/**
+ * @file spi.c
+ */
+
 #include "spi.h"
 
 #include <avr/io.h>
@@ -18,8 +22,7 @@ void spi_write(uint8_t data) {
     SPDR = data;
 
     // Wait for transmission to complete
-    while (!(SPSR & (1 << SPIF)))
-        ;
+    while (!(SPSR & (1 << SPIF)));
 }
 
 uint8_t spi_read(void) {
