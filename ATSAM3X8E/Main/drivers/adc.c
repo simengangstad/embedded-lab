@@ -9,6 +9,11 @@
 
 #define THRESHOLD 1500
 
+/**
+ * @brief Reads the ADC register.
+ */
+static uint32_t adc_read(void) { return ADC->ADC_CDR[CHANNEL0]; }
+
 void adc_init(void) {
     // Enable the clock for ADC
     PMC->PMC_PCER1 |= PMC_PCER1_PID37;
@@ -22,7 +27,5 @@ void adc_init(void) {
     // Begin conversion
     ADC->ADC_CR |= ADC_CR_START;
 }
-
-static uint32_t adc_read(void) { return ADC->ADC_CDR[CHANNEL0]; }
 
 uint32_t adc_ir_beam_blocked(void) { return adc_read() < THRESHOLD ? 1 : 0; }

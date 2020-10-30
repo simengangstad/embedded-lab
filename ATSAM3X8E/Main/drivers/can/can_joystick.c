@@ -1,3 +1,6 @@
+/**
+ * @file can_joystick.c
+ */
 
 #include "can_joystick.h"
 

@@ -172,6 +172,12 @@
     <Compile Include="drivers\actuator\motor_controller.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="drivers\actuator\motor_interface.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\actuator\motor_interface.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="drivers\actuator\pwm.c">
       <SubType>compile</SubType>
     </Compile>

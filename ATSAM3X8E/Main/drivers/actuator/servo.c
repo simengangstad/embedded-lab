@@ -1,3 +1,7 @@
+/**
+ * @file servo.c
+ */
+
 #include "../uart_and_printf/printf-stdarg.h"
 #include "pwm.h"
 #include "stdio.h"

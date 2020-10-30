@@ -1,6 +1,13 @@
+/**
+ * @file pwm.c
+ */
+
 #include "pwm.h"
 
 #include "sam.h"
+
+#define CHANNEL_DUTY_CYCLE_MAX 0x00004E20
+#define SERVO_MID_POINT_DUTY_CYCLE 7.5
 
 void pwm_init(void) {
     // Disable PIO PC18

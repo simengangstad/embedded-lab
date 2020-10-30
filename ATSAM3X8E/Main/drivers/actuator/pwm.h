@@ -1,21 +1,19 @@
-/*
- * pwm.h
- *
- * Created: 16.10.2020 09:13:02
- *  Author: gotvinne
- */ 
+/**
+ * @file pwm.h
+ * @brief Driver for setting up a specific PWM signal.
+ */
 
+#ifndef PWM_H
+#define PWM_H
 
-#ifndef PWM_H_
-#define PWM_H_
-
-#define PIO_WPMR_DISABLE 0x50494F00
-#define CHANNEL_DUTY_CYCLE_MAX 0x00004E20
-#define SERVO_MID_POINT_DUTY_CYCLE 7.5
-
+/**
+ * @brief Sets up the specific pin (PC18) for PWM output.
+ */
 void pwm_init(void);
 
-void pwm_set_duty_cycle(float percent); 
+/**
+ * @brief Sets the duty cycle of the PWM signal.
+ */
+void pwm_set_duty_cycle(float percent);
 
-
-#endif /* PWM_H_ */
+#endif
