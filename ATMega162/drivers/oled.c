@@ -175,7 +175,7 @@ void oled_update() {
         oled_write_command(0xB0 + row);
 
         for (uint8_t column = 0; column < COLUMN_SIZE; column++) {
-            uint8_t data = external_memory_read(SRAM_OFFSET + row * 128 + column);
+            const uint8_t data = external_memory_read(SRAM_OFFSET + row * 128 + column);
             external_memory_write(data, OLED_DATA_OFFSET);
         }
     }

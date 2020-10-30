@@ -63,6 +63,11 @@ uint8_t input_right_button_pressed(void);
 uint8_t input_joystick_button_pressed(void);
 
 /**
+ * @brief Return a string corresponding with the given @p joystick_direction.
+ */
+char* input_get_string_from_joystick_direction(JoystickDirection joystick_direction);
+
+/**
  * @brief Runs a while loop outputting the different inputs.
  */
 void input_test(void);

@@ -21,7 +21,7 @@ void external_memory_write(uint8_t data, uint16_t offset_address) {
 
 uint8_t external_memory_read(uint16_t offset_address) {
     volatile uint8_t *external_memory = (uint8_t *)BASE_ADDRESS;
-    uint8_t value = external_memory[offset_address];
+    const uint8_t value = external_memory[offset_address];
     return value;
 }
 

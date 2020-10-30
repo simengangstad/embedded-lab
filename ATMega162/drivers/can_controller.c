@@ -12,7 +12,7 @@
 #define MCP_INTERRUPT_PIN PD3
 
 ISR(INT1_vect) {
-    uint8_t status = mcp2515_read_status();
+    const uint8_t status = mcp2515_read_status();
     Message* message_ptr;
 
     if (status & MCP_RX0IF) {
@@ -94,8 +94,8 @@ void can_controller_read(uint8_t buffer_id, Message* message_ptr) {
         interrupt_flag_address = MCP_RX1IF;
     }
 
-    uint16_t id_high_byte = (uint16_t)mcp2515_read(id_high_byte_address);
-    uint16_t id_low_byte = (uint16_t)mcp2515_read(id_low_byte_address);
+    const uint16_t id_high_byte = (uint16_t)mcp2515_read(id_high_byte_address);
+    const uint16_t id_low_byte = (uint16_t)mcp2515_read(id_low_byte_address);
 
     message_ptr->id = (id_high_byte << 3) | (id_low_byte >> 5);
 

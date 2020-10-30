@@ -27,7 +27,7 @@ uint8_t mcp2515_read(uint8_t address) {
 
     spi_write(MCP_READ);
     spi_write(address);
-    uint8_t result = spi_read();
+    const uint8_t result = spi_read();
 
     spi_slave_deselect();
 
@@ -79,7 +79,7 @@ void mcp2515_rts() {
 uint8_t mcp2515_read_status() {
     spi_slave_select();
     spi_write(MCP_READ_STATUS);
-    uint8_t status = spi_read();
+    const uint8_t status = spi_read();
     spi_slave_deselect();
     return status;
 }

@@ -6,6 +6,7 @@
 
 #include <avr/io.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include <util/delay.h>
 
 #include "../drivers/adc.h"
@@ -98,8 +99,8 @@ JoystickPosition input_joystick_position(void) {
 }
 
 JoystickDirection input_joystick_direction(void) {
-    int8_t value_x = input_correct_joystick_from_calibration(adc_read(ADC_JOYSTICK_X_CHANNEL), midpoint_x);
-    int8_t value_y = input_correct_joystick_from_calibration(adc_read(ADC_JOYSTICK_Y_CHANNEL), midpoint_y);
+    const int8_t value_x = input_correct_joystick_from_calibration(adc_read(ADC_JOYSTICK_X_CHANNEL), midpoint_x);
+    const int8_t value_y = input_correct_joystick_from_calibration(adc_read(ADC_JOYSTICK_Y_CHANNEL), midpoint_y);
 
     if (abs(value_x) > abs(value_y)) {
         if (value_x < -JOYSTICK_DEADZONE_DIRECTION) {
@@ -133,18 +134,31 @@ uint8_t input_right_button_pressed(void) { return (PIND & (1 << RIGHT_TOUCH_BUTT
 
 uint8_t input_joystick_button_pressed(void) { return (PINB & (1 << JOYSTICK_BUTTON_PIN)) > 0 ? 0 : 1; }
 
+char* input_get_string_from_joystick_direction(JoystickDirection joystick_direction) {
+    switch (joystick_direction) {
+        case UP:
+            return "up";
+        case DOWN:
+            return "down";
+        case LEFT:
+            return "left";
+        case RIGHT:
+            return "right";
+        default:
+            return "neutral";
+    }
+}
+
 void input_test(void) {
     while (1) {
-        JoystickPosition joystick_position = input_joystick_position();
-        SliderPosition slider_position = input_slider_position();
-        uint8_t left_button = input_left_button_pressed();
-        uint8_t right_button = input_right_button_pressed();
-        const char* horizontal_direction = get_string_from_joystick_direction(input_joystick_horizontal_direction());
-        const char* vertical_direction = get_string_from_joystick_direction(input_joystick_vertical_direction());
-        uint8_t joystick_button_pressed = input_joystick_button_pressed();
+        const JoystickPosition joystick_position = input_joystick_position();
+        const SliderPosition slider_position = input_slider_position();
+        const uint8_t left_button = input_left_button_pressed();
+        const uint8_t right_button = input_right_button_pressed();
+        const char* direction = input_get_string_from_joystick_direction(input_joystick_direction());
+        const uint8_t joystick_button_pressed = input_joystick_button_pressed();
 
-        printf("x: %d, y: %d, vertical: %s, horizontal: %s, ", joystick_position.x, joystick_position.y,
-               vertical_direction, horizontal_direction);
+        printf("x: %d, y: %d, direction: %s", joystick_position.x, joystick_position.y, direction);
         printf("left slider: %d, right slider: %d, left button: %i, right button: %i, joystick button: %i \r\n",
                slider_position.left, slider_position.right, left_button, right_button, joystick_button_pressed);
         _delay_ms(200);

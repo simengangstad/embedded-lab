@@ -25,27 +25,10 @@ void initialize_atmega() {
     can_controller_init();
 }
 
-char* get_string_from_joystick_direction(JoystickDirection joystick_direction) {
-    switch (joystick_direction) {
-        case UP:
-            return "up";
-        case DOWN:
-            return "down";
-        case LEFT:
-            return "left";
-        case RIGHT:
-            return "right";
-        default:
-            return "neutral";
-    }
-}
-
 int main(void) {
     initialize_atmega();
 
     Message joystick_position_message = {1, 3, {0, 0, 0}};
-
-    int count = 0;
 
     while (1) {
         if (gui_display_update_flag()) {
