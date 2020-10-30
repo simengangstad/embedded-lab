@@ -1,3 +1,8 @@
+/**
+ * @file input.h
+ * @brief High level interface for the inputs on the multifunction board.
+ */
+
 #ifndef INPUT_H
 #define INPUT_H
 
@@ -23,43 +28,43 @@ typedef struct {
 } SliderPosition;
 
 /**
- * @brief Sets up the input and does an initial calibration of the joysticks.
+ * @brief Sets up the input pins and does an initial calibration of the joysticks.
  */
-void input_init();
+void input_init(void);
 
 /**
  * @return The current joystick position.
  */
-JoystickPosition input_joystick_position();
+JoystickPosition input_joystick_position(void);
 
 /**
  * @return The current direction of the joystick.
  */
-JoystickDirection input_joystick_direction();
+JoystickDirection input_joystick_direction(void);
 
 /**
  * @return The current slider positions.
  */
-SliderPosition input_slider_position();
+SliderPosition input_slider_position(void);
 
 /**
  * @return 0/1 when not pressed / pressed.
  */
-uint8_t input_left_button_pressed();
+uint8_t input_left_button_pressed(void);
 
 /**
  * @return 0/1 when not pressed / pressed.
  */
-uint8_t input_right_button_pressed();
+uint8_t input_right_button_pressed(void);
 
 /**
  * @return 0/1 when not pressed / pressed.
  */
-uint8_t input_joystick_button_pressed();
+uint8_t input_joystick_button_pressed(void);
 
 /**
  * @brief Runs a while loop outputting the different inputs.
  */
-void input_test();
+void input_test(void);
 
 #endif

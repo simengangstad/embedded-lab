@@ -1,3 +1,7 @@
+/**
+ * @file input.c
+ */
+
 #include "input.h"
 
 #include <avr/io.h>
@@ -29,7 +33,7 @@ static uint8_t midpoint_y = 0;
  * @brief Performs CALIBRATION_STEPS reads of the joystick position and
  * calculates the offset midpoint.
  */
-static void input_calibrate_joystick() {
+static void input_calibrate_joystick(void) {
     int midpoint_x_total = 0;
     int midpoint_y_total = 0;
 
@@ -66,7 +70,7 @@ static int input_correct_joystick_from_calibration(uint8_t value, uint8_t midpoi
     }
 }
 
-void input_init() {
+void input_init(void) {
     input_calibrate_joystick();
 
     // Set up pins on PD4 and PD5 for button input, PB1 for joystick button.
@@ -75,7 +79,7 @@ void input_init() {
     DDRB &= ~(1 << JOYSTICK_BUTTON_PIN);
 }
 
-JoystickPosition input_joystick_position() {
+JoystickPosition input_joystick_position(void) {
     JoystickPosition position;
 
     position.x = input_correct_joystick_from_calibration(adc_read(ADC_JOYSTICK_X_CHANNEL), midpoint_x);
@@ -93,7 +97,7 @@ JoystickPosition input_joystick_position() {
     return position;
 }
 
-JoystickDirection input_joystick_direction() {
+JoystickDirection input_joystick_direction(void) {
     int8_t value_x = input_correct_joystick_from_calibration(adc_read(ADC_JOYSTICK_X_CHANNEL), midpoint_x);
     int8_t value_y = input_correct_joystick_from_calibration(adc_read(ADC_JOYSTICK_Y_CHANNEL), midpoint_y);
 
@@ -114,7 +118,7 @@ JoystickDirection input_joystick_direction() {
     return NEUTRAL;
 }
 
-SliderPosition input_slider_position() {
+SliderPosition input_slider_position(void) {
     SliderPosition position;
 
     position.left = 100 * adc_read(ADC_LEFT_SLIDER_CHANNEL) / 255.0;
@@ -123,11 +127,13 @@ SliderPosition input_slider_position() {
     return position;
 }
 
-uint8_t input_left_button_pressed() { return (PIND & (1 << LEFT_TOUCH_BUTTON_PIN)) > 0 ? 1 : 0; }
+uint8_t input_left_button_pressed(void) { return (PIND & (1 << LEFT_TOUCH_BUTTON_PIN)) > 0 ? 1 : 0; }
 
-uint8_t input_right_button_pressed() { return (PIND & (1 << RIGHT_TOUCH_BUTTON_PIN)) > 0 ? 1 : 0; }
+uint8_t input_right_button_pressed(void) { return (PIND & (1 << RIGHT_TOUCH_BUTTON_PIN)) > 0 ? 1 : 0; }
 
-void input_test() {
+uint8_t input_joystick_button_pressed(void) { return (PINB & (1 << JOYSTICK_BUTTON_PIN)) > 0 ? 0 : 1; }
+
+void input_test(void) {
     while (1) {
         JoystickPosition joystick_position = input_joystick_position();
         SliderPosition slider_position = input_slider_position();
@@ -144,4 +150,3 @@ void input_test() {
         _delay_ms(200);
     }
 }
-uint8_t input_joystick_button_pressed() { return (PINB & (1 << JOYSTICK_BUTTON_PIN)) > 0 ? 0 : 1; }

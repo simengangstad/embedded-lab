@@ -1,3 +1,8 @@
+/**
+ * @file gui.h
+ * @brief Graphical user interface on the OLED consisting of a menu system.
+ */
+
 #ifndef GUI_H
 #define GUI_H
 
@@ -36,21 +41,21 @@ struct Menu {
 /**
  * @brief Initializes the menu system.
  */
-void gui_init();
+void gui_init(void);
 
 /**
- * @brief Polls input from the joystick.
+ * @brief Polls input from the multi function board.
  */
-void gui_handle_input();
+void gui_handle_input(void);
 
 /**
- * @brief Overwrites the OLED buffer with a buffer located in SRAM.
+ * @brief Writes the menu system to the OLED.
  */
-void gui_display();
+void gui_display(void);
 
 /**
- * @return 1 when the timer running at 60 Hz has triggered an interrupt to update the display.
+ * @return 1 when the timer running at 30 Hz has triggered an interrupt to update the display.
  */
-uint8_t gui_display_update_flag();
+uint8_t gui_display_update_flag(void);
 
 #endif

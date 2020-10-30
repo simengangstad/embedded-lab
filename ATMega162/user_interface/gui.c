@@ -1,3 +1,7 @@
+/**
+ * @file gui.c
+ */
+
 #include "gui.h"
 
 #include <avr/interrupt.h>
@@ -6,12 +10,39 @@
 
 #include "input.h"
 
+/**
+ * @brief Holds the current menu in the menu system.
+ */
 static Menu* current_menu;
+
+/**
+ * @brief Holds the current item selected.
+ */
 static MenuItem* current_item;
+
+/**
+ * @brief Used to detect a change in direction.
+ */
 static JoystickDirection previous_direction = NEUTRAL;
+
+/**
+ * @brief Used to detect a change in button state.
+ *
+ */
 static uint8_t previous_button_state = 0;
+
+/**
+ * @brief Gets set to 1 when the timer running at the display refresh rate fires an interrupt.
+ *        Is used for checking whether a new gui_display call should be issued.
+ */
 static uint8_t display_update_flag = 0;
 
+/**
+ * @brief Sets up a menu with a @p parent_menu (if any) and a @p parent_item (if any),
+ *        which is item which will go into this menu when clicked.
+ *
+ * @note The function mallocs the menu.
+ */
 static Menu* gui_construct_menu(Menu* parent_menu, MenuItem* parent_item, char* title) {
     Menu* menu = (Menu*)malloc(sizeof(Menu));
 
@@ -23,6 +54,13 @@ static Menu* gui_construct_menu(Menu* parent_menu, MenuItem* parent_item, char* 
     return menu;
 }
 
+/**
+ * @brief Adds a menu item to a menu.
+ *
+ * @param function Will be executed when the item is clicked.
+ *
+ * @note The function mallocs the menu item.
+ */
 static MenuItem* gui_add_menu_item(Menu* menu, char* text, void (*function)()) {
     MenuItem* new_item = (MenuItem*)malloc(sizeof(MenuItem));
 
@@ -50,16 +88,13 @@ static MenuItem* gui_add_menu_item(Menu* menu, char* text, void (*function)()) {
 
 void print_button_pressed() { printf("Pressed\r\n"); }
 
-ISR(TIMER1_COMPA_vect) {
-    display_update_flag += 1;
-}
+ISR(TIMER1_COMPA_vect) { display_update_flag += 1; }
 
-static void gui_setup_update_display_timer() {
-    // Set the timer to fire on 20 Hz
-	// 60: 79
-	// 30: 159
-	// 20: 239
-    // 10: 479
+/**
+ * @brief Sets up a timer which updates the display update flag at a given frequency.
+ */
+static void gui_setup_update_display_timer(void) {
+    // Set the timer to fire on 30 Hz
     OCR1A = 159;
 
     // Set mode to CTC, clear timer on compare with prescaling 1024.
@@ -75,7 +110,7 @@ static void gui_setup_update_display_timer() {
     sei();
 }
 
-void gui_init() {
+void gui_init(void) {
     current_menu = gui_construct_menu(NULL, NULL, "Main Menu");
     gui_add_menu_item(current_menu, "Play", &print_button_pressed);
     MenuItem* settings_item = gui_add_menu_item(current_menu, "Settings", NULL);
@@ -98,7 +133,7 @@ void gui_init() {
     gui_setup_update_display_timer();
 }
 
-void gui_handle_input() {
+void gui_handle_input(void) {
     JoystickDirection current_direction = input_joystick_direction();
 
     if (current_direction != previous_direction) {
@@ -144,8 +179,7 @@ void gui_handle_input() {
     }
 }
 
-void gui_display() {
-
+void gui_display(void) {
     oled_clear();
 
     // If we are in a submenu
@@ -179,16 +213,14 @@ void gui_display() {
         iterator = iterator->next;
         row++;
     }
-	
+
     oled_update();
-	
-	if (display_update_flag > 1) {
-		display_update_flag -= 1;	
-	}
-	else {
-		display_update_flag = 0;
-	}
-	
+
+    if (display_update_flag > 1) {
+        display_update_flag -= 1;
+    } else {
+        display_update_flag = 0;
+    }
 }
 
-uint8_t gui_display_update_flag() { return display_update_flag > 0 ? 1 : 0; }
+uint8_t gui_display_update_flag(void) { return display_update_flag > 0 ? 1 : 0; }
