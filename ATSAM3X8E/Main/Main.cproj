@@ -160,16 +160,28 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="drivers\actuator\solenoid.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\actuator\solenoid.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\can_controller.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\can_controller.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="player_input.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="player_input.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="device_startup\startup_sam3xa.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="device_startup\system_sam3xa.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="drivers\actuator\motor_controller.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="drivers\actuator\motor_controller.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="drivers\actuator\motor_interface.c">
@@ -178,40 +190,16 @@
     <Compile Include="drivers\actuator\motor_interface.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="drivers\actuator\pwm.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="drivers\actuator\pwm.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="drivers\actuator\servo.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="drivers\actuator\servo.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="drivers\can\can_controller.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="drivers\can\can_controller.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="drivers\can\can_interrupt.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="drivers\can\can_interrupt.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="drivers\adc.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="drivers\adc.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="drivers\can\can_joystick.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="drivers\can\can_joystick.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="drivers\uart_and_printf\printf-stdarg.c">
@@ -235,11 +223,16 @@
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="motor_controller.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="motor_controller.h">
+      <SubType>compile</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="device_startup" />
     <Folder Include="drivers" />
-    <Folder Include="drivers\can\" />
     <Folder Include="drivers\actuator" />
     <Folder Include="drivers\uart_and_printf\" />
   </ItemGroup>
