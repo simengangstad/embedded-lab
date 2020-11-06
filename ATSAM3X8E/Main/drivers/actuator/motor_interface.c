@@ -6,7 +6,6 @@
 
 #include <stdlib.h>
 
-#include "../can/can_input.h"
 #include "sam.h"
 
 /**
@@ -87,13 +86,13 @@ int16_t motor_interface_read_position() {
 
     // Read low byte
     PIOD->PIO_SODR |= PIO_SODR_P2;
-    delay_us(20);
+    delay_us(30);  // Had to wait a bit longer then the 20 us to avoid spikes
     out |= (PIOC->PIO_PDSR >> 1) & 0x00FF;
 
     // Read high byte
     PIOD->PIO_CODR |= PIO_CODR_P2;
-    delay_us(20);
+    delay_us(30);
     out |= ((PIOC->PIO_PDSR >> 1) & 0x00FF) << 8;
 
-    return -out;  // temporary fix to make right side positive
+    return -out;  // quick fix to make right side positive
 }
