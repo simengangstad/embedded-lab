@@ -6,7 +6,7 @@
 
 #include <stdlib.h>
 
-#include "..\can\can_joystick.h"
+#include "../can/can_input.h"
 #include "sam.h"
 
 /**

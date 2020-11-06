@@ -28,7 +28,8 @@ void initialize_atmega() {
 int main(void) {
     initialize_atmega();
 
-    Message joystick_position_message = {1, 3, {0, 0, 0}};
+    Message joystick_position_message = {1, 4, {0, 0, 0, 0}};
+    Message touch_buttons_and_sliders_message = {2, 4, {0, 0, 0, 0}};
 
     while (1) {
         if (gui_display_update_flag()) {
@@ -41,9 +42,18 @@ int main(void) {
         joystick_position_message.data[0] = position.x;
         joystick_position_message.data[1] = position.y;
         joystick_position_message.data[2] = direction;
+        joystick_position_message.data[3] = input_joystick_button_pressed();
 
         // printf("%d", mcp2515_read_status() & 0x2);
         can_controller_transmit(&joystick_position_message);
+
+        SliderPosition slider_position = input_slider_position();
+        touch_buttons_and_sliders_message[0] = slider_position.left;
+        touch_buttons_and_sliders_message[1] = slider_position.right;
+        touch_buttons_and_sliders_message[2] = input_left_button_pressed();
+        touch_buttons_and_sliders_message[3] = input_right_button_pressed();
+
+        can_controller_transmit(&slider_position);
     }
 
     return 0;

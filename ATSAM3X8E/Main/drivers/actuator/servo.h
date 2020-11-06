@@ -9,8 +9,8 @@
 #include <stdint.h>
 
 /**
- * @brief Sends a duty cycle to the servo by transforming the @p joystick_position.
+ * @brief Sends a duty cycle to the servo by transforming the @p slider_position.
  */
-void servo_send_duty_cycle(int8_t joystick_position);
+void servo_send_duty_cycle(int8_t slider_position);
 
 #endif

@@ -6,7 +6,7 @@
 #ifndef MOTOR_CONTROLLER_H
 #define MOTOR_CONTROLLER_H
 
-#include "../can/can_joystick.h"
+#include "../can/can_input.h"
 
 /**
  * @brief Sets up the motor interface and the timer for the control loop, so that it runs on a fixed
