@@ -13,7 +13,8 @@
 
 #define CALIBRATION_STEPS 50
 #define CALIBRATION_STEP_INTERVAL 5
-#define JOYSTICK_DEADZONE 20
+#define JOYSTICK_DEADZONE_X 15
+#define JOYSTICK_DEADZONE_Y 20
 #define JOYSTICK_DEADZONE_DIRECTION 50
 
 #define LEFT_TOUCH_BUTTON_PIN DDD5
@@ -85,13 +86,13 @@ JoystickPosition input_joystick_position(void) {
 
     position.x = input_correct_joystick_from_calibration(adc_read(ADC_JOYSTICK_X_CHANNEL), midpoint_x);
 
-    if (abs(position.x) < JOYSTICK_DEADZONE) {
+    if (abs(position.x) < JOYSTICK_DEADZONE_X) {
         position.x = 0;
     }
 
     position.y = input_correct_joystick_from_calibration(adc_read(ADC_JOYSTICK_Y_CHANNEL), midpoint_y);
 
-    if (abs(position.y) < JOYSTICK_DEADZONE) {
+    if (abs(position.y) < JOYSTICK_DEADZONE_Y) {
         position.y = 0;
     }
 
@@ -158,7 +159,7 @@ void input_test(void) {
         const char* direction = input_get_string_from_joystick_direction(input_joystick_direction());
         const uint8_t joystick_button_pressed = input_joystick_button_pressed();
 
-        printf("x: %d, y: %d, direction: %s", joystick_position.x, joystick_position.y, direction);
+        printf("x: %d, y: %d, direction: %s ", joystick_position.x, joystick_position.y, direction);
         printf("left slider: %d, right slider: %d, left button: %i, right button: %i, joystick button: %i \r\n",
                slider_position.left, slider_position.right, left_button, right_button, joystick_button_pressed);
         _delay_ms(200);
