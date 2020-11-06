@@ -1,16 +1,11 @@
 #include <math.h>
 #include <string.h>
 
-#include "drivers/actuator/motor_controller.h"
-#include "drivers/actuator/motor_interface.h"
-#include "drivers/actuator/pwm.h"
-#include "drivers/actuator/servo.h"
-#include "drivers/adc.h"
-#include "drivers/can/can_controller.h"
-#include "drivers/can/can_input.h"
+#include "drivers/can_controller.h"
 #include "drivers/uart_and_printf/printf-stdarg.h"
 #include "drivers/uart_and_printf/uart.h"
 #include "game.h"
+#include "player_input.h"
 #include "sam.h"
 
 // Set baud rate prescaler to 41, PS1 = 7 TQ, PS2 = 6 TQ, PROPAG = 2 TQ, SJW = 1 TQ.
@@ -21,7 +16,7 @@ void ATSAM_leds(void) {
     PMC->PMC_PCER0 = PMC_PCER0_PID11;
 
     // Enable pins
-    PIOA->PIO_PER = PIO_PA19;  // PIO:PER_P19
+    PIOA->PIO_PER = PIO_PA19;  // PIO_PER_P19
     PIOA->PIO_PER = PIO_PA20;  // PIO_PER_P20
 
     // Set to output
@@ -36,11 +31,9 @@ void ATSAM_leds(void) {
 void ATSAM_INIT(void) {
     SystemInit();
     configure_uart();
-    pwm_init();
-    adc_init();
-    motor_interface_init();
-    motor_controller_init();
-    ATSAM_leds();
+    can_init_def_tx_rx_mb(ATSAM_CAN_BR);
+
+    game_init();
 
     // Disable watchdog
     WDT->WDT_MR = WDT_MR_WDDIS;
@@ -48,14 +41,13 @@ void ATSAM_INIT(void) {
 
 int main(void) {
     ATSAM_INIT();
-    can_init_def_tx_rx_mb(ATSAM_CAN_BR);
 
-    Joystick joystick;
     TouchInput touch_input;
     while (1) {
-        can_input_read(&joystick, &touch_input);
-        printf("%d\n\r", joystick.button_pressed);
-        game_update(&joystick, &touch_input);
+        player_input_get_touch_input(&touch_input);
+        if (touch_input.right_button) {
+            game_loop();
+        }
     }
 
     return 0;

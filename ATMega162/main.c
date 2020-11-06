@@ -47,13 +47,14 @@ int main(void) {
         // printf("%d", mcp2515_read_status() & 0x2);
         can_controller_transmit(&joystick_position_message);
 
-        SliderPosition slider_position = input_slider_position();
-        touch_buttons_and_sliders_message[0] = slider_position.left;
-        touch_buttons_and_sliders_message[1] = slider_position.right;
-        touch_buttons_and_sliders_message[2] = input_left_button_pressed();
-        touch_buttons_and_sliders_message[3] = input_right_button_pressed();
+        printf("JS: %d\n\r", position.x);
 
-        can_controller_transmit(&slider_position);
+        SliderPosition slider_position = input_slider_position();
+        touch_buttons_and_sliders_message.data[0] = slider_position.left;
+        touch_buttons_and_sliders_message.data[1] = slider_position.right;
+        touch_buttons_and_sliders_message.data[2] = input_left_button_pressed();
+        touch_buttons_and_sliders_message.data[3] = input_right_button_pressed();
+        can_controller_transmit(&touch_buttons_and_sliders_message);
     }
 
     return 0;
