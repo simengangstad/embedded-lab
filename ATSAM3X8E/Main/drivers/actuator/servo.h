@@ -1,16 +1,19 @@
 /**
  * @file servo.h
- * @brief Driver for the servo motor on the game board.
+ * @brief Driver for controlling servo with PWM
  */
 
 #ifndef SERVO_H
 #define SERVO_H
 
-#include <stdint.h>
+/**
+ * @brief Sets up the specific pin (PC18) for PWM output.
+ */
+void servo_init(void);
 
 /**
- * @brief Sends a duty cycle to the servo by transforming the @p slider_position.
+ * @brief Sets the duty cycle of the PWM signal.
  */
-void servo_send_duty_cycle(int8_t slider_position);
+void servo_set_duty_cycle(float percent);
 
 #endif
