@@ -6,11 +6,13 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "drivers/can/can_input.h"
 
 /**
- * @brief Updates the game state based on @p joystick_ptr and @p touch_input_ptr.
+ * @brief
+ *
  */
-void game_update(Joystick* joystick_ptr, TouchInput* touch_input_ptr);
+void game_init(void);
+
+void game_loop(void);
 
 #endif

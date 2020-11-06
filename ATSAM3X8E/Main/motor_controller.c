@@ -6,13 +6,16 @@
 
 #include <stdlib.h>
 
-#include "motor_interface.h"
+#include "drivers/actuator/motor_interface.h"
 #include "sam.h"
 
-// Assume initial central position
-#define JOYSTICK_TO_POSITION_SCALE 45
-#define POSITION_BOUNDRY_RIGHT 4500
-#define POSITION_BOUNDRY_LEFT -4500
+// Constants for board 6 and 13:
+// Initial position to the left
+#define POSITION_BOUNDRY_RIGHT 8400
+#define POSITION_BOUNDRY_LEFT 0
+#define POSITION_MID_POINT 4200
+#define JOYSTICK_TO_POSITION_SCALE 42
+#define JOYSTICK_TO_POSITION_OFFSET 100
 
 #define SCALING_OPENLOOP_MAX_GAIN 655  // ~(2^16-1)/100
 #define OPEN_LOOP_GAIN 15
@@ -27,29 +30,26 @@
  */
 #define TIMER_COMPARE_THRESHOLD 65625
 
-#define SMOOTHING_FACTOR 500.0;
-
 /**
  * @brief Gains for the PI controller.
  */
-static const float kp = 0.3, ki = 0.6;
+static const float kp = 0.3, ki = 3;
 
+/**
+ * @brief Set point for the controller
+ */
 static int32_t reference = 0;
+
+/**
+ * @brief Sum up the error
+ */
+static float integrated_error = 0;
 
 /**
  * @brief The control law for the PI position controller.
  */
 static void motor_controller_update() {
-    static float integrated_error = 0;
-
     int16_t position = motor_interface_read_position();
-
-    // There were some high noisy values from the encoder; cut them off:
-    if (position < POSITION_BOUNDRY_LEFT) {
-        position = POSITION_BOUNDRY_LEFT;
-    } else if (position > POSITION_BOUNDRY_RIGHT) {
-        position = POSITION_BOUNDRY_RIGHT;
-    }
 
     // Controller error
     float error = reference - position;
@@ -71,7 +71,7 @@ void TC0_Handler(void) {
     motor_controller_update();
 }
 
-void motor_controller_init() {
+void motor_controller_init(void) {
     motor_interface_init();
     // Set up timer so that the control loop is executed on a fixed interval
     // Enable PMC for timer counter channel 0
@@ -83,16 +83,28 @@ void motor_controller_init() {
     // Set timer compare value
     TC0->TC_CHANNEL[0].TC_RC = TIMER_COMPARE_THRESHOLD;
 
-    // Enable interrupt on RC compare
+    // Configure interrupt to fire on RC compare
     TC0->TC_CHANNEL[0].TC_IER = TC_IER_CPCS;
-    NVIC_EnableIRQ(TC0_IRQn);
 
     // Enable clock
     TC0->TC_CHANNEL[0].TC_CCR = TC_CCR_CLKEN | TC_CCR_SWTRG;
 }
 
-void motor_controller_set_reference(Joystick* joystick) { reference = JOYSTICK_TO_POSITION_SCALE * (joystick->x); }
+void motor_controller_start(void) {
+    integrated_error = 0;
+    NVIC_EnableIRQ(TC0_IRQn);
+}
 
+void motor_controller_stop(void) {
+    NVIC_DisableIRQ(TC0_IRQn);
+    integrated_error = 0;
+}
+
+void motor_controller_set_reference(int8_t ref) {
+    reference = JOYSTICK_TO_POSITION_SCALE * (ref + JOYSTICK_TO_POSITION_OFFSET);
+}
+
+/*
 void motor_controller_open_loop_update(Joystick* joystick) {
     if (joystick->dir == JS_RIGHT) {
         motor_interface_set_direction(DRIVE_RIGHT);
@@ -105,3 +117,4 @@ void motor_controller_open_loop_update(Joystick* joystick) {
 
     motor_interface_set_actuation(speed);
 }
+*/
