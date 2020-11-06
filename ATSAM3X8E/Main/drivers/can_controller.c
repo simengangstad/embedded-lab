@@ -10,7 +10,7 @@
 
 #include "can_controller.h"
 
-#include "../uart_and_printf/printf-stdarg.h"
+#include "uart_and_printf/printf-stdarg.h"
 #include "sam.h"
 
 /**
