@@ -4,12 +4,19 @@
 
 #include "player_input.h"
 
+#include "can_identifiers.h"
 #include "drivers/can_controller.h"
 #include "sam.h"
 
 static Joystick joystick;
 
 static TouchInput touch_input;
+
+static uint8_t game_start_flag = 0;
+
+void player_input_init(void) {
+    player_input_reset();
+}
 
 void player_input_get_joystick(Joystick* js) {
     js->x = joystick.x;
@@ -23,6 +30,24 @@ void player_input_get_touch_input(TouchInput* ti) {
     ti->right_slider = touch_input.right_slider;
     ti->left_button = touch_input.left_button;
     ti->right_button = touch_input.right_button;
+}
+
+void player_input_reset() {
+	touch_input.left_slider = 0;
+	touch_input.right_slider = 50; // Causes the servo to be in the middle
+	touch_input.left_button = 0;
+	touch_input.right_button = 0;
+	
+	joystick.x = 0;
+	joystick.y = 0;
+	joystick.dir = JS_NEUTRAL;
+	joystick.button_pressed = 0; 
+}
+
+uint8_t player_input_game_start(void) {
+    uint8_t out = game_start_flag;
+    game_start_flag = 0;
+    return out;
 }
 
 /**
@@ -51,16 +76,24 @@ void CAN0_Handler(void) {
             printf("CAN0 message arrived in non-used mailbox\n\r");
         }
 
-        if (message.id == JOYSTICK_ID) {
-            joystick.x = (int8_t)message.data[0];
-            joystick.y = (int8_t)message.data[1];
-            joystick.dir = (JoystickDirection)message.data[2];
-            joystick.button_pressed = message.data[3];
-        } else if (message.id == TOUCH_INPUT_ID) {
-            touch_input.left_slider = (int8_t)message.data[0];
-            touch_input.right_slider = (int8_t)message.data[1];
-            touch_input.left_button = (uint8_t)message.data[2];
-            touch_input.right_button = (uint8_t)message.data[3];
+        switch (message.id) {
+            case CAN_JOYSTICK_MESSAGE_ID:
+                joystick.x = (int8_t)message.data[0];
+                joystick.y = (int8_t)message.data[1];
+                joystick.dir = (JoystickDirection)message.data[2];
+                joystick.button_pressed = message.data[3];
+                break;
+            case CAN_TOUCH_MESSAGE_ID:
+                touch_input.left_slider = (int8_t)message.data[0];
+                touch_input.right_slider = (int8_t)message.data[1];
+                touch_input.left_button = (uint8_t)message.data[2];
+                touch_input.right_button = (uint8_t)message.data[3];
+				break;
+            case CAN_GAME_START_ID:
+                game_start_flag = 1;
+				break;
+            default:
+                break;
         }
     }
 

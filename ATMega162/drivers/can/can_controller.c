@@ -7,29 +7,6 @@
 #include <avr/interrupt.h>
 #include <stdlib.h>
 
-#include "mcp2515.h"
-
-#define MCP_INTERRUPT_PIN PD3
-
-ISR(INT1_vect) {
-    const uint8_t status = mcp2515_read_status();
-    Message* message_ptr;
-
-    if (status & MCP_RX0IF) {
-        message_ptr = (Message*)malloc(sizeof(Message));
-        can_controller_read(0, message_ptr);
-    } else if (status & MCP_RX1IF) {
-        message_ptr = (Message*)malloc(sizeof(Message));
-        can_controller_read(1, message_ptr);
-    }
-
-    if (message_ptr) {
-        printf("%s\r\n", message_ptr->data);
-
-        free(message_ptr);
-    }
-}
-
 void can_controller_init() {
     mcp2515_init();
 

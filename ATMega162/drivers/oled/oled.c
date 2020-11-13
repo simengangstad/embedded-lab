@@ -1,6 +1,6 @@
 #include "oled.h"
 
-#include "external_memory.h"
+#include "../memory/external_memory.h"
 #include "fonts.h"
 
 /**

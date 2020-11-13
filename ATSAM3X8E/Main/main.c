@@ -1,6 +1,3 @@
-#include <math.h>
-#include <string.h>
-
 #include "drivers/can_controller.h"
 #include "drivers/uart_and_printf/printf-stdarg.h"
 #include "drivers/uart_and_printf/uart.h"
@@ -32,7 +29,6 @@ void ATSAM_INIT(void) {
     SystemInit();
     configure_uart();
     can_init_def_tx_rx_mb(ATSAM_CAN_BR);
-
     game_init();
 
     // Disable watchdog
@@ -42,10 +38,8 @@ void ATSAM_INIT(void) {
 int main(void) {
     ATSAM_INIT();
 
-    TouchInput touch_input;
     while (1) {
-        player_input_get_touch_input(&touch_input);
-        if (touch_input.right_button) {
+        if (player_input_game_start()) {
             game_loop();
         }
     }

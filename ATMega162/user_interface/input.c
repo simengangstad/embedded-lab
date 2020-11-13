@@ -21,6 +21,10 @@
 #define RIGHT_TOUCH_BUTTON_PIN DDD4
 #define JOYSTICK_BUTTON_PIN DDB1
 
+/**************************************************************************************************************/
+/*                                              STATIC FUNCTIONALITY                                          */
+/**************************************************************************************************************/
+
 /**
  * @brief Joystick midpoint/offset in x.
  */
@@ -72,7 +76,27 @@ static int input_correct_joystick_from_calibration(uint8_t value, uint8_t midpoi
     }
 }
 
+/**
+ * @return 0/1 when not pressed / pressed.
+ */
+static uint8_t input_joystick_button_pressed(void) { return (PINB & (1 << JOYSTICK_BUTTON_PIN)) > 0 ? 0 : 1; }
+
+/**
+ * @return 0/1 when not pressed / pressed.
+ */
+static uint8_t input_left_button_pressed(void) { return (PIND & (1 << LEFT_TOUCH_BUTTON_PIN)) > 0 ? 1 : 0; }
+
+/**
+ * @return 0/1 when not pressed / pressed.
+ */
+static uint8_t input_right_button_pressed(void) { return (PIND & (1 << RIGHT_TOUCH_BUTTON_PIN)) > 0 ? 1 : 0; }
+
+/**************************************************************************************************************/
+/*                                              INTERFACE                                                     */
+/**************************************************************************************************************/
+
 void input_init(void) {
+    adc_init();
     input_calibrate_joystick();
 
     // Set up pins on PD4 and PD5 for button input, PB1 for joystick button.
@@ -81,87 +105,62 @@ void input_init(void) {
     DDRB &= ~(1 << JOYSTICK_BUTTON_PIN);
 }
 
-JoystickPosition input_joystick_position(void) {
-    JoystickPosition position;
+Joystick input_joystick(void) {
+    Joystick joystick;
 
-    position.x = input_correct_joystick_from_calibration(adc_read(ADC_JOYSTICK_X_CHANNEL), midpoint_x);
+    joystick.x = input_correct_joystick_from_calibration(adc_read(ADC_JOYSTICK_X_CHANNEL), midpoint_x);
 
-    if (abs(position.x) < JOYSTICK_DEADZONE_X) {
-        position.x = 0;
+    if (abs(joystick.x) < JOYSTICK_DEADZONE_X) {
+        joystick.x = 0;
     }
 
-    position.y = input_correct_joystick_from_calibration(adc_read(ADC_JOYSTICK_Y_CHANNEL), midpoint_y);
+    joystick.y = input_correct_joystick_from_calibration(adc_read(ADC_JOYSTICK_Y_CHANNEL), midpoint_y);
 
-    if (abs(position.y) < JOYSTICK_DEADZONE_Y) {
-        position.y = 0;
+    if (abs(joystick.y) < JOYSTICK_DEADZONE_Y) {
+        joystick.y = 0;
     }
 
-    return position;
-}
+    joystick.dir = NEUTRAL;
+    joystick.button_pressed = input_joystick_button_pressed();
 
-JoystickDirection input_joystick_direction(void) {
-    const int8_t value_x = input_correct_joystick_from_calibration(adc_read(ADC_JOYSTICK_X_CHANNEL), midpoint_x);
-    const int8_t value_y = input_correct_joystick_from_calibration(adc_read(ADC_JOYSTICK_Y_CHANNEL), midpoint_y);
-
-    if (abs(value_x) > abs(value_y)) {
-        if (value_x < -JOYSTICK_DEADZONE_DIRECTION) {
-            return LEFT;
-        } else if (value_x > JOYSTICK_DEADZONE_DIRECTION) {
-            return RIGHT;
+    if (abs(joystick.x) > abs(joystick.y)) {
+        if (joystick.x < -JOYSTICK_DEADZONE_DIRECTION) {
+            joystick.dir = LEFT;
+        } else if (joystick.x > JOYSTICK_DEADZONE_DIRECTION) {
+            joystick.dir = RIGHT;
         }
     } else {
-        if (value_y < -JOYSTICK_DEADZONE_DIRECTION) {
-            return DOWN;
-        } else if (value_y > JOYSTICK_DEADZONE_DIRECTION) {
-            return UP;
+        if (joystick.y < -JOYSTICK_DEADZONE_DIRECTION) {
+            joystick.dir = DOWN;
+        } else if (joystick.y > JOYSTICK_DEADZONE_DIRECTION) {
+            joystick.dir = UP;
         }
     }
 
-    return NEUTRAL;
+    return joystick;
 }
 
-SliderPosition input_slider_position(void) {
-    SliderPosition position;
+TouchInput input_touch(void) {
+    TouchInput touch_input;
 
-    position.left = 100 * adc_read(ADC_LEFT_SLIDER_CHANNEL) / 255.0;
-    position.right = 100 * adc_read(ADC_RIGHT_SLIDER_CHANNEL) / 255.0;
+    touch_input.left_slider = 100 * adc_read(ADC_LEFT_SLIDER_CHANNEL) / 255.0;
+    touch_input.right_slider = 100 * adc_read(ADC_RIGHT_SLIDER_CHANNEL) / 255.0;
 
-    return position;
-}
+    touch_input.left_button = input_left_button_pressed();
+    touch_input.right_button = input_right_button_pressed();
 
-uint8_t input_left_button_pressed(void) { return (PIND & (1 << LEFT_TOUCH_BUTTON_PIN)) > 0 ? 1 : 0; }
-
-uint8_t input_right_button_pressed(void) { return (PIND & (1 << RIGHT_TOUCH_BUTTON_PIN)) > 0 ? 1 : 0; }
-
-uint8_t input_joystick_button_pressed(void) { return (PINB & (1 << JOYSTICK_BUTTON_PIN)) > 0 ? 0 : 1; }
-
-char* input_get_string_from_joystick_direction(JoystickDirection joystick_direction) {
-    switch (joystick_direction) {
-        case UP:
-            return "up";
-        case DOWN:
-            return "down";
-        case LEFT:
-            return "left";
-        case RIGHT:
-            return "right";
-        default:
-            return "neutral";
-    }
+    return touch_input;
 }
 
 void input_test(void) {
     while (1) {
-        const JoystickPosition joystick_position = input_joystick_position();
-        const SliderPosition slider_position = input_slider_position();
-        const uint8_t left_button = input_left_button_pressed();
-        const uint8_t right_button = input_right_button_pressed();
-        const char* direction = input_get_string_from_joystick_direction(input_joystick_direction());
-        const uint8_t joystick_button_pressed = input_joystick_button_pressed();
+        const Joystick joystick = input_joystick();
+        const TouchInput touch_input = input_touch();
 
-        printf("x: %d, y: %d, direction: %s ", joystick_position.x, joystick_position.y, direction);
+        printf("x: %d, y: %d, direction: %d ", joystick.x, joystick.y, joystick.dir);
         printf("left slider: %d, right slider: %d, left button: %i, right button: %i, joystick button: %i \r\n",
-               slider_position.left, slider_position.right, left_button, right_button, joystick_button_pressed);
+               touch_input.left_slider, touch_input.right_slider, touch_input.left_button, touch_input.right_button,
+               joystick.button_pressed);
         _delay_ms(200);
     }
 }

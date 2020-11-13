@@ -7,7 +7,7 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
-#include "external_memory.h"
+#include "memory/external_memory.h"
 
 #define ADC_OFFSET_ADDRESS 0x400
 
@@ -31,7 +31,7 @@ void adc_init(void) {
 
 uint8_t adc_read(uint8_t channel) {
     external_memory_write(channel, ADC_OFFSET_ADDRESS);
-    //_delay_us(1); // Do we need this? Read about ADC timing
+    _delay_us(20);  
     volatile uint8_t value = external_memory_read(ADC_OFFSET_ADDRESS);
     return value;
 }

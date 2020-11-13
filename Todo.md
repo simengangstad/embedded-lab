@@ -1,6 +1,7 @@
 Genrelt:
++ Forklar spillogikken i game-modulen
++ Rydd opp i includes (avhengigheter)
 + Fiks Joystick
-+ Gjør CAN-grensesnittene for Atmega og Atsam like
 + Free memory in gui
 + ADC timing (joystick, delay)
 + Left shift macros instead of hex

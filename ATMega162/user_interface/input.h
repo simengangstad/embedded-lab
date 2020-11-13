@@ -14,18 +14,21 @@
 typedef enum { UP, DOWN, LEFT, RIGHT, NEUTRAL } JoystickDirection;
 
 /**
- * @brief Defines the position of the joystick.
+ * @brief Defines the state of the joystick.
  */
 typedef struct {
     int8_t x, y;
-} JoystickPosition;
+    JoystickDirection dir;
+    uint8_t button_pressed;
+} Joystick;
 
 /**
- * @brief Defines the position of the sliders.
+ * @brief Defines the state of the touch input.
  */
 typedef struct {
-    int8_t left, right;
-} SliderPosition;
+    int8_t left_slider, right_slider;
+    uint8_t left_button, right_button;
+} TouchInput;
 
 /**
  * @brief Sets up the input pins and does an initial calibration of the joysticks.
@@ -33,39 +36,14 @@ typedef struct {
 void input_init(void);
 
 /**
- * @return The current joystick position.
+ * @return The current joystick state.
  */
-JoystickPosition input_joystick_position(void);
+Joystick input_joystick(void);
 
 /**
- * @return The current direction of the joystick.
+ * @return The current touch input.
  */
-JoystickDirection input_joystick_direction(void);
-
-/**
- * @return The current slider positions.
- */
-SliderPosition input_slider_position(void);
-
-/**
- * @return 0/1 when not pressed / pressed.
- */
-uint8_t input_left_button_pressed(void);
-
-/**
- * @return 0/1 when not pressed / pressed.
- */
-uint8_t input_right_button_pressed(void);
-
-/**
- * @return 0/1 when not pressed / pressed.
- */
-uint8_t input_joystick_button_pressed(void);
-
-/**
- * @brief Return a string corresponding with the given @p joystick_direction.
- */
-char* input_get_string_from_joystick_direction(JoystickDirection joystick_direction);
+TouchInput input_touch(void);
 
 /**
  * @brief Runs a while loop outputting the different inputs.

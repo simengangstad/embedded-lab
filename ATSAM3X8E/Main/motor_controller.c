@@ -61,7 +61,7 @@ static void motor_controller_update() {
     MotorDirection dir = (actuation < 0) ? DRIVE_LEFT : DRIVE_RIGHT;
     motor_interface_set_direction(dir);
     motor_interface_set_actuation((uint16_t)abs(actuation));
-    printf("Reference: %d Position: %d Actuation %d\n\r", reference, position, (int)actuation);
+    // printf("Reference: %d Position: %d Actuation %d\n\r", reference, position, (int)actuation); // For debugging
 }
 
 void TC0_Handler(void) {

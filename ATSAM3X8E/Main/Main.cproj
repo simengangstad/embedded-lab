@@ -160,6 +160,15 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="can_identifiers.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="delay.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="delay.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="drivers\actuator\solenoid.c">
       <SubType>compile</SubType>
     </Compile>

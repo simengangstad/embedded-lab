@@ -22,7 +22,9 @@ void spi_write(uint8_t data) {
     SPDR = data;
 
     // Wait for transmission to complete
-    while (!(SPSR & (1 << SPIF)));
+    while (!(SPSR & (1 << SPIF))) {
+		volatile int a = 1;
+	}
 }
 
 uint8_t spi_read(void) {
@@ -30,8 +32,9 @@ uint8_t spi_read(void) {
     SPDR = 0xFF;
 
     // Wait for transmission to complete
-    while (!(SPSR & (1 << SPIF)))
-        ;
+    while (!(SPSR & (1 << SPIF))) {
+		volatile int a = 1;
+	}
 
     return SPDR;
 }

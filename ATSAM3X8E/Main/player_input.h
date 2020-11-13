@@ -1,21 +1,15 @@
 /**
  * @file player_input.h
- * @brief Interface for reading joystick and touch messages from the controlled area network.
+ * @brief Interface for reading inputs from the CAN bus. The inputs are joystick and touch messages, as well as a
+ * message for starting the game. The module keeps the current inputs in static variables. An interrupt is called on
+ * receive, which updates the relevant input variable. The get functions returns the static variables, and the reset
+ * function makes the inputs ready for the next game.
  */
+
 #ifndef PLAYER_INPUT_H
 #define PLAYER_INPUT_H
 
 #include <stdio.h>
-
-/**
- * @brief Message ID of the joystick.
- */
-#define JOYSTICK_ID 1
-
-/**
- * @brief Message ID of the touch inputs.
- */
-#define TOUCH_INPUT_ID 2
 
 /**
  * @brief Defines the direction of the joystick.
@@ -40,17 +34,28 @@ typedef struct {
 } TouchInput;
 
 /**
- * @brief update current joystick-values 
- * 
- * @param js 
+ * @brief Initializes the input.
+ */
+void player_input_init(void);
+
+/**
+ * @brief Resets all inputs.
+ */
+void player_input_reset(void);
+
+/**
+ * @brief Get current joystick values.
  */
 void player_input_get_joystick(Joystick* js);
 
 /**
- * @brief update current touch 
- * 
- * @param ti 
+ * @brief Get current touch input.
  */
 void player_input_get_touch_input(TouchInput* ti);
+
+/**
+ * @brief Checks the game start flag, and resets it.
+ */
+uint8_t player_input_game_start(void);
 
 #endif

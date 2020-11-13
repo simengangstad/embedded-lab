@@ -9,6 +9,8 @@
 
 #include <stdio.h>
 
+#include "mcp2515.h"
+
 /**
  * @brief Structure for a CAN message.
  */
