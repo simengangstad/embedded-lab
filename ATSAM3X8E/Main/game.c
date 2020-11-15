@@ -60,7 +60,6 @@ void game_loop(void) {
 
     do {
         player_input_get_joystick(&joystick);
-        printf("Joystick: %d\r\n", joystick.x);
         player_input_get_touch_input(&touch_input);
 
         game_set_servo_position(touch_input.right_slider);
@@ -79,17 +78,17 @@ void game_loop(void) {
         }
 
         // Delay to avoid counting multiple goals because of an flickering IR beam
-        // delay_us(1000);
+        delay_us(1000);
 
         // Right button resets the score
-        /*if (touch_input.right_button != last_right_button) {
+        if (touch_input.right_button != last_right_button) {
             if (touch_input.right_button) {
                 goals_conceded = 0;
                 score_message.data[0] = goals_conceded;
                 can_send(&score_message, 0);
             }
             last_right_button = touch_input.right_button;
-        }*/
+        }
 
     } while (!touch_input.left_button);  // Left button quits the game
 
