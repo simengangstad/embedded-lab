@@ -96,5 +96,5 @@ void game_loop(void) {
     motor_controller_stop();
 
     // Reset the input such that we don't have left_button = 1 next time we want to play
-    // player_input_reset();
+    player_input_reset();
 }

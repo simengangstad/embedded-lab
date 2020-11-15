@@ -65,9 +65,14 @@ static uint8_t display_update_flag = 0;
 static Menu* gui_construct_menu(Menu* parent_menu, MenuItem* parent_item, char* title) {
     Menu* menu = (Menu*)malloc(sizeof(Menu));
 
+    if (menu == NULL) {
+        printf("1\r\n");
+    }
+
     menu->parent_menu = parent_menu;
     menu->parent_item = parent_item;
-    menu->title = title;
+    menu->title = title;  // malloc((strlen(title) + 1) * sizeof(char));
+    // strcpy(menu->title, title);
     menu->top_item = NULL;
 
     return menu;
@@ -81,9 +86,14 @@ static Menu* gui_construct_menu(Menu* parent_menu, MenuItem* parent_item, char* 
  * @note The function mallocs the menu item.
  */
 static MenuItem* gui_add_menu_item(Menu* menu, char* text, uint8_t show_arrow, void (*function)()) {
-    MenuItem* new_item = (MenuItem*)malloc(sizeof(MenuItem));
+    MenuItem* new_item = malloc(sizeof(MenuItem));
 
-    new_item->text = text;
+    if (new_item == NULL) {
+        printf("2\r\n");
+    }
+
+    new_item->text = text;  // = malloc((strlen(text) + 1) * sizeof(char));
+    // strcpy(new_item->text, text);
     new_item->action = function;
     new_item->next = NULL;
     new_item->sub_menu = NULL;
@@ -107,7 +117,7 @@ static MenuItem* gui_add_menu_item(Menu* menu, char* text, uint8_t show_arrow, v
     return new_item;
 }
 
-ISR(TIMER1_COMPA_vect) { display_update_flag++; }
+ISR(TIMER1_COMPA_vect) { display_update_flag = 1; }
 
 /**
  * @brief Sets up a timer which updates the display update flag at a given frequency.
@@ -129,17 +139,104 @@ static void gui_setup_update_display_timer(void) {
     sei();
 }
 
+static void gui_start_game_user_lampe(void);
+static void gui_start_game_user_tvinnereim(void);
+static void gui_start_game_user_gangstad(void);
+static void gui_start_game_user_guest(void);
+static void gui_scores();
+static void gui_credits();
+static void gui_reset_settings();
+
+static void gui_start(void) {
+    current_menu = gui_construct_menu(NULL, NULL, "Main Menu");
+
+    // Construct screen where one chooses the player
+    MenuItem* play_item = gui_add_menu_item(current_menu, "Play", 1, NULL);
+    Menu* choose_player_menu = gui_construct_menu(current_menu, play_item, "Log in");
+
+    gui_add_menu_item(choose_player_menu, "Lampe", 0, &gui_start_game_user_lampe);
+    gui_add_menu_item(choose_player_menu, "Tvinnereim", 0, &gui_start_game_user_tvinnereim);
+    gui_add_menu_item(choose_player_menu, "Gangstad", 0, &gui_start_game_user_gangstad);
+    gui_add_menu_item(choose_player_menu, "Guest", 0, &gui_start_game_user_guest);
+
+    play_item->sub_menu = choose_player_menu;
+
+    // Scores
+    gui_add_menu_item(current_menu, "Score", 1, &gui_scores);
+
+    // Settings
+    MenuItem* settings_item = gui_add_menu_item(current_menu, "Settings", 1, NULL);
+    Menu* settings_menu = gui_construct_menu(current_menu, settings_item, "Settings");
+    settings_item->sub_menu = settings_menu;
+    gui_add_menu_item(settings_menu, "Reset scores", 0, &gui_reset_settings);
+
+    // Credits
+    gui_add_menu_item(current_menu, "Credits", 1, &gui_credits);
+
+    current_item = current_menu->top_item;
+}
+
+static void gui_stop(void) {
+    while (current_menu->parent_menu != NULL) {
+        current_menu = current_menu->parent_menu;
+    }
+    current_item = current_menu->top_item;
+
+    // Iterative Depth-First search to free every menu and item
+    Menu* menu_temp;
+    MenuItem* item_temp;
+
+    while (current_item != NULL) {
+        if (current_item->sub_menu != NULL) {
+            current_menu = current_item->sub_menu;
+            current_item = current_item->sub_menu->top_item;
+        } else {
+            item_temp = current_item;
+            current_item = current_item->next;
+            current_menu->top_item = current_item;
+            free(item_temp);
+        }
+        if (current_item == NULL) {
+            menu_temp = current_menu;
+            current_menu = current_menu->parent_menu;
+            free(menu_temp);
+
+            if (current_menu != NULL) {
+                current_item = current_menu->top_item->next;
+                free(current_menu->top_item);
+                current_menu->top_item = current_item;
+            }
+        }
+    }
+}
+
 /**************************************************************************************************************/
 /*                                  Actions for the GUI items                                                 */
 /**************************************************************************************************************/
 
-static void gui_start_game_user_lampe(void) { game_play(PLAYER_LAMPE_ID); }
+static void gui_start_game_user_lampe(void) {
+    gui_stop();
+    game_play(PLAYER_LAMPE_ID);
+    gui_start();
+}
 
-static void gui_start_game_user_tvinnereim(void) { game_play(PLAYER_TVINNEREIM_ID); }
+static void gui_start_game_user_tvinnereim(void) {
+    gui_stop();
+    game_play(PLAYER_TVINNEREIM_ID);
+    gui_start();
+}
 
-static void gui_start_game_user_gangstad(void) { game_play(PLAYER_GANGSTAD_ID); }
+static void gui_start_game_user_gangstad(void) {
+    gui_stop();
+    game_play(PLAYER_GANGSTAD_ID);
+    gui_start();
+}
 
-static void gui_start_game_user_guest(void) { game_play(PLAYER_GUEST_ID); }
+static void gui_start_game_user_guest(void) {
+    gui_stop();
+    game_play(PLAYER_GUEST_ID);
+    gui_start();
+}
 
 static void gui_scores() {
     oled_clear();
@@ -151,7 +248,7 @@ static void gui_scores() {
     // Take the center position of the oled screen and subtract half the size of the text.
     // Multiply with 8 because the font size large is 8 pixels per character, divide by 2
     // to get the center position.
-    const char* highscore = "Highscore";
+    char* highscore = "Highscore";
     oled_pos(0, COLUMN_SIZE / 2 - strlen(highscore) * 8 / 2);
     oled_print(highscore, LARGE, NON_INVERTED);
 
@@ -159,22 +256,22 @@ static void gui_scores() {
     oled_pos(3, 0);
     oled_print("Lampe: ", LARGE, NON_INVERTED);
     itoa(eeprom_read_byte((uint8_t*)PLAYER_LAMPE_ADDRESS), score_buffer, 10);
-    oled_print(&score_buffer, LARGE, NON_INVERTED);
+    oled_print(score_buffer, LARGE, NON_INVERTED);
 
     oled_pos(4, 0);
     oled_print("Tvinnereim: ", LARGE, NON_INVERTED);
     itoa(eeprom_read_byte((uint8_t*)PLAYER_TVINNEREIM_ADDRESS), score_buffer, 10);
-    oled_print(&score_buffer, LARGE, NON_INVERTED);
+    oled_print(score_buffer, LARGE, NON_INVERTED);
 
     oled_pos(5, 0);
     oled_print("Gangstad: ", LARGE, NON_INVERTED);
     itoa(eeprom_read_byte((uint8_t*)PLAYER_GANGSTAD_ADDRESS), score_buffer, 10);
-    oled_print(&score_buffer, LARGE, NON_INVERTED);
+    oled_print(score_buffer, LARGE, NON_INVERTED);
 
     oled_pos(6, 0);
     oled_print("Guest: ", LARGE, NON_INVERTED);
     itoa(eeprom_read_byte((uint8_t*)PLAYER_GUEST_ADDRESS), score_buffer, 10);
-    oled_print(&score_buffer, LARGE, NON_INVERTED);
+    oled_print(score_buffer, LARGE, NON_INVERTED);
 
     oled_update();
 
@@ -186,7 +283,7 @@ static void gui_scores() {
     } while (joystick.dir != LEFT);
 }
 
-void gui_credits() {
+static void gui_credits() {
     oled_clear();
 
     oled_pos(0, 10);
@@ -196,7 +293,7 @@ void gui_credits() {
     // Take the center position of the oled screen and subtract half the size of the text.
     // Multiply with 8 because the font size large is 8 pixels per character, divide by 2
     // to get the center position.
-    const char* credits = "Credits";
+    char* credits = "Credits";
     oled_pos(0, COLUMN_SIZE / 2 - strlen(credits) * 8 / 2);
     oled_print(credits, LARGE, NON_INVERTED);
 
@@ -225,40 +322,14 @@ void gui_credits() {
     } while (joystick.dir != LEFT);
 }
 
-void gui_reset_settings() { game_reset_score_board(); }
+static void gui_reset_settings() { game_reset_score_board(); }
 
 /**************************************************************************************************************/
 
 void gui_init(void) {
     oled_init();
     input_init();
-
-    current_menu = gui_construct_menu(NULL, NULL, "Main Menu");
-
-    // Construct screen where one chooses the player
-    MenuItem* play_item = gui_add_menu_item(current_menu, "Play", 1, NULL);
-    Menu* choose_player_menu = gui_construct_menu(current_menu, play_item, "Log in");
-
-    gui_add_menu_item(choose_player_menu, "Lampe", 0, &gui_start_game_user_lampe);
-    gui_add_menu_item(choose_player_menu, "Tvinnereim", 0, &gui_start_game_user_tvinnereim);
-    gui_add_menu_item(choose_player_menu, "Gangstad", 0, &gui_start_game_user_gangstad);
-    gui_add_menu_item(choose_player_menu, "Guest", 0, &gui_start_game_user_guest);
-
-    play_item->sub_menu = choose_player_menu;
-
-    // Scores
-    gui_add_menu_item(current_menu, "Score", 1, &gui_scores);
-
-    // Settings
-    MenuItem* settings_item = gui_add_menu_item(current_menu, "Settings", 1, NULL);
-    Menu* settings_menu = gui_construct_menu(current_menu, settings_item, "Settings");
-    settings_item->sub_menu = settings_menu;
-    gui_add_menu_item(settings_menu, "Reset scores", 0, &gui_reset_settings);
-
-    // Credits
-    gui_add_menu_item(current_menu, "Credits", 1, &gui_credits);
-
-    current_item = current_menu->top_item;
+    gui_start();
 
     // Set up interrupt
     gui_setup_update_display_timer();
@@ -349,11 +420,7 @@ void gui_display_menu(void) {
 
     oled_update();
 
-    if (display_update_flag > 1) {
-        display_update_flag -= 1;
-    } else {
-        display_update_flag = 0;
-    }
+    display_update_flag = 0;
 }
 
 void gui_display_game(char* current_player, uint8_t score) {
@@ -386,11 +453,7 @@ void gui_display_game(char* current_player, uint8_t score) {
 
     oled_update();
 
-    if (display_update_flag > 1) {
-        display_update_flag -= 1;
-    } else {
-        display_update_flag = 0;
-    }
+    display_update_flag = 0;
 }
 
-uint8_t gui_display_update_flag(void) { return display_update_flag > 0 ? 1 : 0; }
+uint8_t gui_display_update_flag(void) { return display_update_flag; }

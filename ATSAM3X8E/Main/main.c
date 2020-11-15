@@ -39,8 +39,9 @@ int main(void) {
     ATSAM_INIT();
 
     while (1) {
-        if (player_input_game_start()) {
+        if (player_input_game_start_flag()) {
             game_loop();
+            player_input_clear_game_start_flag();
         }
     }
 

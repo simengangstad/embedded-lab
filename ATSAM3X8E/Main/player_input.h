@@ -3,7 +3,8 @@
  * @brief Interface for reading inputs from the CAN bus. The inputs are joystick and touch messages, as well as a
  * message for starting the game. The module keeps the current inputs in static variables. An interrupt is called on
  * receive, which updates the relevant input variable. The get functions returns the static variables, and the reset
- * function makes the inputs ready for the next game.
+ * function makes the inputs ready for the next game. Keeps a flag telling the game to start, which must be reset after
+ * the game is started.
  */
 
 #ifndef PLAYER_INPUT_H
@@ -54,8 +55,13 @@ void player_input_get_joystick(Joystick* js);
 void player_input_get_touch_input(TouchInput* ti);
 
 /**
- * @brief Checks the game start flag, and resets it.
+ * @brief Checks the game start flag.
  */
-uint8_t player_input_game_start(void);
+uint8_t player_input_game_start_flag(void);
+
+/**
+ * @brief Clears the game start flag.
+ */
+void player_input_clear_game_start_flag(void);
 
 #endif

@@ -75,18 +75,20 @@ void game_play(uint8_t player_id) {
     Message joystick_message = {CAN_JOYSTICK_MESSAGE_ID, 4, {0, 0, 0, 0}};
     Message touch_message = {CAN_TOUCH_MESSAGE_ID, 4, {0, 0, 0, 0}};
 
+    Joystick joystick;
     TouchInput touch_input = input_touch();
 
     while (!touch_input.left_button) {
         if (gui_display_update_flag()) {
             gui_display_game(current_player.name, current_player.current_score);
             // Send joystick data over CAN
-            Joystick joystick = input_joystick();
+            joystick = input_joystick();
             joystick_message.data[0] = joystick.x;
             joystick_message.data[1] = joystick.y;
             joystick_message.data[2] = joystick.dir;
             joystick_message.data[3] = joystick.button_pressed;
             can_controller_transmit(&joystick_message);
+			printf("%d\n\r", joystick.x);
 
             // Send touch data over CAN
             touch_input = input_touch();

@@ -2,6 +2,8 @@
  * @file adc.c
  */
 
+#define F_CPU 4915200
+
 #include "adc.h"
 
 #include <avr/io.h>

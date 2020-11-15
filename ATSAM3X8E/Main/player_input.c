@@ -1,5 +1,5 @@
 /**
- * @file can_joystick.c
+ * @file player_input.c
  */
 
 #include "player_input.h"
@@ -14,9 +14,11 @@ static TouchInput touch_input;
 
 static uint8_t game_start_flag = 0;
 
-void player_input_init(void) {
-    player_input_reset();
-}
+void player_input_init(void) { player_input_reset(); }
+
+uint8_t player_input_game_start_flag(void) { return game_start_flag; }
+
+void player_input_clear_game_start_flag(void) { game_start_flag = 0; }
 
 void player_input_get_joystick(Joystick* js) {
     js->x = joystick.x;
@@ -33,21 +35,15 @@ void player_input_get_touch_input(TouchInput* ti) {
 }
 
 void player_input_reset() {
-	touch_input.left_slider = 0;
-	touch_input.right_slider = 50; // Causes the servo to be in the middle
-	touch_input.left_button = 0;
-	touch_input.right_button = 0;
-	
-	joystick.x = 0;
-	joystick.y = 0;
-	joystick.dir = JS_NEUTRAL;
-	joystick.button_pressed = 0; 
-}
+    touch_input.left_slider = 0;
+    touch_input.right_slider = 0;
+    touch_input.left_button = 0;
+    touch_input.right_button = 0;
 
-uint8_t player_input_game_start(void) {
-    uint8_t out = game_start_flag;
-    game_start_flag = 0;
-    return out;
+    joystick.x = 0;
+    joystick.y = 0;
+    joystick.dir = JS_NEUTRAL;
+    joystick.button_pressed = 0;
 }
 
 /**
@@ -88,10 +84,11 @@ void CAN0_Handler(void) {
                 touch_input.right_slider = (int8_t)message.data[1];
                 touch_input.left_button = (uint8_t)message.data[2];
                 touch_input.right_button = (uint8_t)message.data[3];
-				break;
+                break;
             case CAN_GAME_START_ID:
                 game_start_flag = 1;
-				break;
+                printf("start\n\r");
+                break;
             default:
                 break;
         }

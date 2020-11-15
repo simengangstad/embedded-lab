@@ -4,6 +4,8 @@
 
 #include "input.h"
 
+#define F_CPU 4915200
+
 #include <avr/io.h>
 #include <stdbool.h>
 #include <stdlib.h>
