@@ -1,3 +1,7 @@
+/**
+ * @file game.c
+ */
+
 #include "game.h"
 
 #include <avr/delay.h>

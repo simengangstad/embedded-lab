@@ -1,3 +1,7 @@
+/**
+ * @file main.c
+ */
+
 #include "can_identifiers.h"
 #include "drivers/can/can_controller.h"
 #include "drivers/memory/external_memory.h"

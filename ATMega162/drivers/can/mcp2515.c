@@ -1,3 +1,6 @@
+/**
+ * @file mcp2515.c
+ */
 
 #include "mcp2515.h"
 

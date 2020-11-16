@@ -1,3 +1,7 @@
+/**
+ * @file oled.c
+ */
+
 #include "oled.h"
 
 #include "../memory/external_memory.h"

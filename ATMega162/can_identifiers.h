@@ -1,3 +1,7 @@
+/**
+ * @file can_identifiers.h
+ */
+
 #ifndef CAN_IDENTIFIERS_H
 #define CAN_IDENTIFIERS_H
 

@@ -1,3 +1,7 @@
+/**
+ * @file uart.c
+ */
+
 #include "uart.h"
 
 #include <avr/io.h>
