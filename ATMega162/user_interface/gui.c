@@ -66,13 +66,13 @@ static Menu* gui_construct_menu(Menu* parent_menu, MenuItem* parent_item, char* 
     Menu* menu = (Menu*)malloc(sizeof(Menu));
 
     if (menu == NULL) {
-        printf("1\r\n");
+        printf("Error\r\n");
+        return NULL;
     }
 
     menu->parent_menu = parent_menu;
     menu->parent_item = parent_item;
-    menu->title = title;  // malloc((strlen(title) + 1) * sizeof(char));
-    // strcpy(menu->title, title);
+    menu->title = title;  
     menu->top_item = NULL;
 
     return menu;
@@ -89,11 +89,11 @@ static MenuItem* gui_add_menu_item(Menu* menu, char* text, uint8_t show_arrow, v
     MenuItem* new_item = malloc(sizeof(MenuItem));
 
     if (new_item == NULL) {
-        printf("2\r\n");
+        printf("Error\r\n");
+        return NULL;
     }
 
-    new_item->text = text;  // = malloc((strlen(text) + 1) * sizeof(char));
-    // strcpy(new_item->text, text);
+    new_item->text = text;  
     new_item->action = function;
     new_item->next = NULL;
     new_item->sub_menu = NULL;
@@ -441,7 +441,6 @@ void gui_display_game(char* current_player, uint8_t score) {
     oled_pos(0, COLUMN_SIZE / 2 - strlen(current_player) * 8 / 2);
     oled_print(current_player, LARGE, NON_INVERTED);
 
-    // TODO: fix, don't need strcopy
     oled_pos(3, COLUMN_SIZE / 2 - strlen(score_text) * 8 / 2);
     oled_print(score_text, LARGE, NON_INVERTED);
 
