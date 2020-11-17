@@ -1,10 +1,7 @@
-# ttk4155-lab-support-data
-Lab support data for TTK4155 Embedded and Industrial Computer Systems Design Project.
+# TTK4155 - Embedded and Industrial Computer Systems Design Project 
 
-/**************************************************************************************
- * 
- * For use in TTK4155 Embedded and Industrial Computer Systems Design
- * NTNU - Norwegian University of Science and Technology
- *
- *
-**************************************************************************************/
+Lab source files for TTK4155 Embedded and Industrial Computer Systems Design Project.
+
+Authors: Kristian Lampe, Geir Ola Tvinnereim, Simen Gangstad
+
+NTNU - Norwegian University of Science and Technology
