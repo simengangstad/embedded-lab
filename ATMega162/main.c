@@ -1,4 +1,9 @@
 /**
+ * @mainpage
+ * Interfaces with the ATSAM, delivers the game input to the ATSAM over CAN. 
+ */
+
+/**
  * @file main.c
  */
 

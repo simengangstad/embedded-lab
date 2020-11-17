@@ -47,11 +47,7 @@ void player_input_reset() {
 }
 
 /**
- * \brief CAN0 Interrupt handler for RX, TX and bus error interrupts
- *
- * \param void
- *
- * \retval
+ * @brief CAN0 Interrupt handler for RX, TX and bus error interrupts
  */
 void CAN0_Handler(void) {
     char can_sr = CAN0->CAN_SR;

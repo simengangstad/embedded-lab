@@ -2,6 +2,7 @@
  * @file motor_interface.h
  * @brief Driver for the game board motor.
  */
+
 #include <stdint.h>
 
 #ifndef MOTOR_INTERFACE_H

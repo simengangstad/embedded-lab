@@ -1,3 +1,12 @@
+/**
+ * @mainpage
+ * Interfaces with the ATMega, the actuators and the encoder. Responds to game logic input
+ */
+
+/**
+ * @file main.c
+ */
+
 #include "drivers/can_controller.h"
 #include "drivers/uart_and_printf/printf-stdarg.h"
 #include "drivers/uart_and_printf/uart.h"

@@ -1,12 +1,12 @@
 /*
- * uart.h
+ * @file uart.h
  *
- * Author: Gustav O. Often and Eivind H. Jølsgard
+ * @author: Gustav O. Often and Eivind H. Jølsgard
  *
  * For use in TTK4155 Embedded and Industrial Computer Systems Design
  * NTNU - Norwegian University of Science and Technology
  *
- * A simple interface for receiving and transmitting characters to a computer using UART via the on board USB-connector
+ * @brief A simple interface for receiving and transmitting characters to a computer using UART via the on board USB-connector
  */ 
 
 
@@ -17,7 +17,7 @@
 
 #define UART_RINGBUFFER_SIZE 64
 /*
- * Ringbuffer for receiving characters from  
+ * @brief Ringbuffer for receiving characters from  
  */
 typedef struct uart_ringbuffer_t
 {

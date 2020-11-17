@@ -1,11 +1,7 @@
-/*
- * uart.c
+/**
+ * @file uart.c
  *
- * Author: Gustav O. Often and Eivind H. J�lsgard
- *
- * For use in TTK4155 Embedded and Industrial Computer Systems Design
- * NTNU - Norwegian University of Science and Technology
- *
+ * @Author: Gustav O. Often and Eivind H. J�lsgard
  */ 
 #include <stdint.h>
 
@@ -17,19 +13,15 @@ uart_ringbuffer rx_buffer;
 
 
 /**
- * \brief Configure UART.
- *
- * \param void
- *
- * \retval void.
+ * @brief Configure UART.
  */
 void configure_uart(void)
 {
 	uint32_t ul_sr;
 
-/*
-Initialize UART ring buffer as empty
-*/
+/**
+ * @brief Initialize UART ring buffer as empty
+ */
 rx_buffer.head=0;
 rx_buffer.tail=0;
 
@@ -82,11 +74,11 @@ Initialize UART communication
 }
 
 /**
- * \brief Get character from UART
+ * @brief Get character from UART
  *
- * \param *c location of character 
+ * @param *c location of character 
  *
- * \retval Success(0) or failure(1)
+ * @return Success(0) or failure(1)
  */
 int uart_getchar(uint8_t *c)
 {
@@ -102,11 +94,11 @@ int uart_getchar(uint8_t *c)
 }
 
 /*
- * \brief Sends a character through the UART interface
+ * @brief Sends a character through the UART interface
  *
- * \param c Character to be sent
+ * @param c Character to be sent
  *
- * \retval Success(0) or failure(1).
+ * @return Success(0) or failure(1).
  */
 int uart_putchar(const uint8_t c)
 {
