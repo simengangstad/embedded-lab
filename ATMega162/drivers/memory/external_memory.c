@@ -11,6 +11,8 @@
 
 void external_memory_init(void) {
     MCUCR |= (1 << SRE);
+    // Release PC7-PC4 for addresses, since they are used with
+    // JTAG 
     SFIOR |= (1 << XMM2);
 }
 
